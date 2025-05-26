@@ -23,6 +23,13 @@
     <!-- 状态区域 -->
     <section class="status-section">
         <div class="status-item">
+            <div class="status-label">配置状态</div>
+            <div class="status-value" id="configStatus">
+                <span class="status-indicator checking"></span>
+                <span class="status-text">检查中...</span>
+            </div>
+        </div>
+        <div class="status-item">
             <div class="status-label">API状态</div>
             <div class="status-value" id="apiStatus">
                 <span class="status-indicator checking"></span>
@@ -35,6 +42,13 @@
                 <span class="status-indicator"></span>
                 <span class="status-text">检测中...</span>
             </div>
+        </div>
+    </section>
+
+    <!-- 配置消息区域 -->
+    <section class="config-message-section">
+        <div id="configMessage">
+            <!-- 配置状态消息将在这里动态显示 -->
         </div>
     </section>
 

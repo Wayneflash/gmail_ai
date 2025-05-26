@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     initializeElements();
     bindEventListeners();
+    await checkConfigurationStatus();
     await checkApiStatus();
     await checkPageStatus();
     await loadUsageStats();
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function initializeElements() {
     elements = {
+        configStatus: document.getElementById('configStatus'),
         apiStatus: document.getElementById('apiStatus'),
         pageStatus: document.getElementById('pageStatus'),
         openGmail: document.getElementById('openGmail'),
@@ -24,7 +26,8 @@ function initializeElements() {
         todayReplies: document.getElementById('todayReplies'),
         defaultStyle: document.getElementById('defaultStyle'),
         helpLink: document.getElementById('helpLink'),
-        feedbackLink: document.getElementById('feedbackLink')
+        feedbackLink: document.getElementById('feedbackLink'),
+        configMessage: document.getElementById('configMessage')
     };
 }
 
@@ -42,6 +45,78 @@ function bindEventListeners() {
     elements.defaultStyle.addEventListener('change', async (e) => {
         await saveDefaultStyle(e.target.value);
     });
+}
+
+/**
+ * 检查配置状态 - 新增功能
+ * 显示自动配置完成的友好信息
+ */
+async function checkConfigurationStatus() {
+    try {
+        const response = await chrome.runtime.sendMessage({ action: 'getConfig' });
+        
+        if (response.success) {
+            const config = response.data;
+            
+            if (config.isConfigured && config.apiKey) {
+                // 已自动配置完成
+                if (elements.configStatus) {
+                    const indicator = elements.configStatus.querySelector('.status-indicator');
+                    const text = elements.configStatus.querySelector('.status-text');
+                    indicator.className = 'status-indicator';
+                    text.textContent = '已自动配置';
+                }
+                
+                if (elements.configMessage) {
+                    elements.configMessage.innerHTML = `
+                        <div class="config-success">
+                            <span class="success-icon">✅</span>
+                            <div class="success-text">
+                                <strong>配置完成！</strong><br>
+                                已自动配置DeepSeek-V3模型，可直接在Gmail中使用AI回复功能。
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // 修改设置按钮文字
+                if (elements.openSettings) {
+                    elements.openSettings.textContent = '高级设置';
+                    elements.openSettings.title = '打开高级设置页面（可选）';
+                }
+                
+            } else {
+                // 未配置，显示需要设置的信息
+                if (elements.configStatus) {
+                    const indicator = elements.configStatus.querySelector('.status-indicator');
+                    const text = elements.configStatus.querySelector('.status-text');
+                    indicator.className = 'status-indicator error';
+                    text.textContent = '需要配置';
+                }
+                
+                if (elements.configMessage) {
+                    elements.configMessage.innerHTML = `
+                        <div class="config-needed">
+                            <span class="warning-icon">⚠️</span>
+                            <div class="warning-text">
+                                <strong>需要配置</strong><br>
+                                请点击下方"打开设置"按钮配置API密钥。
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        }
+        
+    } catch (error) {
+        console.error('检查配置状态失败:', error);
+        if (elements.configStatus) {
+            const indicator = elements.configStatus.querySelector('.status-indicator');
+            const text = elements.configStatus.querySelector('.status-text');
+            indicator.className = 'status-indicator error';
+            text.textContent = '检查失败';
+        }
+    }
 }
 
 async function checkApiStatus() {
@@ -63,6 +138,9 @@ async function checkApiStatus() {
             return;
         }
         
+        // 显示当前使用的模型
+        text.textContent = `${config.model || 'DeepSeek-V3'} - 检测中...`;
+        
         const testResponse = await chrome.runtime.sendMessage({
             action: 'testConnection',
             data: { apiKey: config.apiKey }
@@ -70,10 +148,10 @@ async function checkApiStatus() {
         
         if (testResponse.success && testResponse.data.connected) {
             indicator.className = 'status-indicator';
-            text.textContent = '正常';
+            text.textContent = `${config.model || 'DeepSeek-V3'} - 正常`;
         } else {
             indicator.className = 'status-indicator error';
-            text.textContent = '连接失败';
+            text.textContent = `${config.model || 'DeepSeek-V3'} - 连接失败`;
         }
         
     } catch (error) {

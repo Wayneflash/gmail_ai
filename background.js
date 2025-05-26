@@ -6,6 +6,91 @@
 // 导入API工具
 importScripts('utils/api.js');
 
+// 默认配置 - 扩展安装时自动设置
+const DEFAULT_CONFIG = {
+    apiKey: 'sk-moyezvpaajlpslwhpieojhplhxafpyhgpoiueqlqcatjpbqt',
+    model: 'deepseek-ai/DeepSeek-V3',
+    maxTokens: 1000,
+    temperature: 0.7,
+    defaultStyle: 'friendly',
+    autoGenerate: true,
+    showNotifications: true,
+    saveHistory: false,
+    replyCount: 3,
+    customPrompt: '',
+    language: 'auto',
+    timeout: 30,
+    retryCount: 2,
+    isConfigured: true // 标记已配置，避免用户需要手动设置
+};
+
+/**
+ * 扩展安装时的初始化
+ * 自动配置默认设置，用户无需手动配置
+ */
+chrome.runtime.onInstalled.addListener(async (details) => {
+    console.log('Gmail AI助手安装/更新:', details.reason);
+    
+    try {
+        // 检查是否已有配置
+        const existingConfig = await chrome.storage.sync.get(['isConfigured']);
+        
+        if (!existingConfig.isConfigured || details.reason === 'install') {
+            // 首次安装或未配置时，自动设置默认配置
+            await chrome.storage.sync.set(DEFAULT_CONFIG);
+            console.log('✅ 自动配置完成，使用默认设置:');
+            console.log('- API密钥: 已设置默认密钥');
+            console.log('- AI模型: DeepSeek-V3');
+            console.log('- 用户无需手动配置即可使用');
+            
+            // 显示欢迎通知
+            if (chrome.notifications) {
+                chrome.notifications.create({
+                    type: 'basic',
+                    iconUrl: 'icons/icon48.png',
+                    title: 'Gmail AI助手',
+                    message: '安装成功！已自动配置完成，可直接在Gmail中使用AI回复功能。'
+                });
+            }
+        } else {
+            console.log('✅ 检测到已有配置，保持用户设置');
+        }
+    } catch (error) {
+        console.error('❌ 自动配置失败:', error);
+        // 即使配置失败，也设置基本配置确保功能可用
+        await chrome.storage.sync.set({
+            apiKey: DEFAULT_CONFIG.apiKey,
+            model: DEFAULT_CONFIG.model,
+            isConfigured: true
+        });
+    }
+});
+
+/**
+ * 扩展启动时检查配置
+ * 确保配置完整性
+ */
+chrome.runtime.onStartup.addListener(async () => {
+    console.log('Gmail AI助手启动');
+    
+    try {
+        const config = await chrome.storage.sync.get(DEFAULT_CONFIG);
+        
+        // 检查关键配置是否存在
+        if (!config.apiKey || !config.model) {
+            console.log('⚠️ 检测到配置不完整，自动补充默认配置');
+            await chrome.storage.sync.set({
+                ...DEFAULT_CONFIG,
+                ...config // 保留用户已有的设置
+            });
+        }
+        
+        console.log('✅ 配置检查完成，扩展就绪');
+    } catch (error) {
+        console.error('❌ 启动配置检查失败:', error);
+    }
+});
+
 // 监听来自content script的消息
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log('收到消息:', request);
@@ -526,23 +611,6 @@ async function updateUsageStats() {
         console.error('更新使用统计失败:', error);
     }
 }
-
-// 扩展安装时的初始化
-chrome.runtime.onInstalled.addListener((details) => {
-    console.log('Gmail AI回复助手已安装/更新');
-    
-    if (details.reason === 'install') {
-        // 首次安装时打开设置页面
-        chrome.tabs.create({
-            url: chrome.runtime.getURL('options/options.html')
-        });
-    }
-});
-
-// 监听扩展启动
-chrome.runtime.onStartup.addListener(() => {
-    console.log('Gmail AI回复助手已启动');
-});
 
 console.log('Gmail AI回复助手后台脚本已加载');
 

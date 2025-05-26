@@ -116,6 +116,58 @@ body {
     50% { opacity: 0.5; }
 }
 
+/* 配置消息区域 */
+.config-message-section {
+    padding: 16px;
+    border-bottom: 1px solid #e8eaed;
+}
+
+.config-success {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background: #e8f5e8;
+    border: 1px solid #c8e6c9;
+    border-radius: 8px;
+    animation: slideDown 0.3s ease;
+}
+
+.config-needed {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background: #fff3e0;
+    border: 1px solid #ffcc02;
+    border-radius: 8px;
+    animation: slideDown 0.3s ease;
+}
+
+.success-icon,
+.warning-icon {
+    font-size: 18px;
+    line-height: 1;
+    margin-top: 2px;
+}
+
+.success-text,
+.warning-text {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.success-text strong,
+.warning-text strong {
+    color: #1b5e20;
+    font-weight: 600;
+}
+
+.warning-text strong {
+    color: #e65100;
+}
+
 /* 通用区域样式 */
 .section-title {
     font-size: 16px;
