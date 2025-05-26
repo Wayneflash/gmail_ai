@@ -1,0 +1,453 @@
+/**
+ * Gmail AI回复助手 - 弹出窗口样式
+ * 采用现代化设计，符合Google Material Design规范
+ */
+
+/* 基础样式重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 380px;
+    min-height: 500px;
+    font-family: 'Google Sans', 'Segoe UI', Roboto, sans-serif;
+    background: #ffffff;
+    color: #202124;
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+/* 头部样式 */
+.popup-header {
+    background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
+    color: white;
+    padding: 20px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(26, 115, 232, 0.2);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+}
+
+.popup-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.version {
+    font-size: 12px;
+    opacity: 0.8;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 8px;
+    border-radius: 12px;
+}
+
+/* 状态区域 */
+.status-section {
+    padding: 16px;
+    border-bottom: 1px solid #e8eaed;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.status-item:last-child {
+    margin-bottom: 0;
+}
+
+.status-label {
+    font-size: 14px;
+    color: #5f6368;
+    font-weight: 500;
+}
+
+.status-value {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #34a853;
+}
+
+.status-indicator.checking {
+    background: #fbbc04;
+    animation: pulse 1.5s infinite;
+}
+
+.status-indicator.error {
+    background: #ea4335;
+}
+
+.status-indicator.offline {
+    background: #9aa0a6;
+}
+
+.status-text {
+    font-size: 13px;
+    color: #202124;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* 通用区域样式 */
+.section-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #202124;
+    margin-bottom: 12px;
+}
+
+/* 快速操作区域 */
+.actions-section {
+    padding: 16px;
+    border-bottom: 1px solid #e8eaed;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 12px;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    text-decoration: none;
+}
+
+.action-btn:hover {
+    border-color: #1a73e8;
+    box-shadow: 0 2px 8px rgba(26, 115, 232, 0.1);
+    transform: translateY(-1px);
+}
+
+.action-btn.primary {
+    background: #1a73e8;
+    color: white;
+    border-color: #1a73e8;
+}
+
+.action-btn.primary:hover {
+    background: #1557b0;
+    border-color: #1557b0;
+}
+
+.action-btn svg {
+    stroke: currentColor;
+}
+
+.action-btn span {
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* 使用统计区域 */
+.stats-section {
+    padding: 16px;
+    border-bottom: 1px solid #e8eaed;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 16px 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e8eaed;
+}
+
+.stat-number {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a73e8;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #5f6368;
+    font-weight: 500;
+}
+
+/* 风格选择区域 */
+.style-section {
+    padding: 16px;
+    border-bottom: 1px solid #e8eaed;
+}
+
+.style-selector {
+    margin-top: 8px;
+}
+
+.style-select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+    color: #202124;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.style-select:focus {
+    outline: none;
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+}
+
+/* 使用提示区域 */
+.tips-section {
+    padding: 16px;
+    border-bottom: 1px solid #e8eaed;
+}
+
+.tip-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.tip-item:last-child {
+    margin-bottom: 0;
+}
+
+.tip-icon {
+    font-size: 16px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.tip-text {
+    font-size: 13px;
+    color: #5f6368;
+    line-height: 1.4;
+}
+
+/* 底部区域 */
+.popup-footer {
+    padding: 16px;
+    background: #f8f9fa;
+    border-top: 1px solid #e8eaed;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.footer-link {
+    font-size: 12px;
+    color: #1a73e8;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+    color: #1557b0;
+    text-decoration: underline;
+}
+
+.footer-copyright {
+    text-align: center;
+    font-size: 11px;
+    color: #9aa0a6;
+}
+
+/* 响应式设计 */
+@media (max-width: 400px) {
+    body {
+        width: 320px;
+    }
+    
+    .popup-header {
+        padding: 16px 12px;
+    }
+    
+    .popup-title {
+        font-size: 16px;
+    }
+    
+    .action-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #202124;
+        color: #e8eaed;
+    }
+    
+    .popup-header {
+        background: linear-gradient(135deg, #1557b0 0%, #1a73e8 100%);
+    }
+    
+    .status-section,
+    .actions-section,
+    .stats-section,
+    .style-section,
+    .tips-section {
+        border-bottom-color: #3c4043;
+    }
+    
+    .action-btn {
+        background: #303134;
+        border-color: #5f6368;
+        color: #e8eaed;
+    }
+    
+    .action-btn:hover {
+        border-color: #8ab4f8;
+        box-shadow: 0 2px 8px rgba(138, 180, 248, 0.1);
+    }
+    
+    .stat-item {
+        background: #303134;
+        border-color: #5f6368;
+    }
+    
+    .style-select {
+        background: #303134;
+        border-color: #5f6368;
+        color: #e8eaed;
+    }
+    
+    .style-select:focus {
+        border-color: #8ab4f8;
+        box-shadow: 0 0 0 2px rgba(138, 180, 248, 0.2);
+    }
+    
+    .popup-footer {
+        background: #303134;
+        border-top-color: #3c4043;
+    }
+    
+    .footer-link {
+        color: #8ab4f8;
+    }
+    
+    .footer-link:hover {
+        color: #aecbfa;
+    }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+    .action-btn {
+        border-width: 2px;
+    }
+    
+    .stat-item {
+        border-width: 2px;
+    }
+    
+    .style-select {
+        border-width: 2px;
+    }
+}
+
+/* 动画效果 */
+.popup-header {
+    animation: slideDown 0.3s ease-out;
+}
+
+.status-section,
+.actions-section,
+.stats-section,
+.style-section,
+.tips-section,
+.popup-footer {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+} 

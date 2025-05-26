@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail AI回复助手</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <!-- 头部区域 -->
+    <header class="popup-header">
+        <div class="logo-container">
+            <svg class="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+            <h1 class="popup-title">Gmail AI回复助手</h1>
+        </div>
+        <div class="version">v1.0.0</div>
+    </header>
+
+    <!-- 状态区域 -->
+    <section class="status-section">
+        <div class="status-item">
+            <div class="status-label">API状态</div>
+            <div class="status-value" id="apiStatus">
+                <span class="status-indicator checking"></span>
+                <span class="status-text">检查中...</span>
+            </div>
+        </div>
+        <div class="status-item">
+            <div class="status-label">当前页面</div>
+            <div class="status-value" id="pageStatus">
+                <span class="status-indicator"></span>
+                <span class="status-text">检测中...</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 快速操作区域 -->
+    <section class="actions-section">
+        <h2 class="section-title">快速操作</h2>
+        
+        <div class="action-grid">
+            <button class="action-btn primary" id="openGmail">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <span>打开Gmail</span>
+            </button>
+            
+            <button class="action-btn secondary" id="openSettings">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                    <path d="M19.4 15A1.65 1.65 0 0 0 21 13.09A1.65 1.65 0 0 0 19.4 9L18.36 8.5A8.26 8.26 0 0 0 17.19 6.81L17.69 5.77A1.65 1.65 0 0 0 15.91 4A1.65 1.65 0 0 0 14 5.6L13.5 6.64A8.26 8.26 0 0 0 11.81 6.81L10.77 5.31A1.65 1.65 0 0 0 9 4A1.65 1.65 0 0 0 7.31 5.77L7.81 6.81A8.26 8.26 0 0 0 6.64 8.5L5.6 9A1.65 1.65 0 0 0 4 10.91A1.65 1.65 0 0 0 5.6 15L6.64 15.5A8.26 8.26 0 0 0 7.81 17.19L7.31 18.23A1.65 1.65 0 0 0 9 20A1.65 1.65 0 0 0 10.77 18.4L11.81 17.36A8.26 8.26 0 0 0 13.5 17.19L14.54 18.69A1.65 1.65 0 0 0 16.23 20A1.65 1.65 0 0 0 18 18.23L17.5 17.19A8.26 8.26 0 0 0 18.67 15.5L19.71 15A1.65 1.65 0 0 0 21 13.09Z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <span>设置</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- 使用统计区域 -->
+    <section class="stats-section">
+        <h2 class="section-title">使用统计</h2>
+        
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number" id="totalReplies">0</div>
+                <div class="stat-label">生成回复</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="todayReplies">0</div>
+                <div class="stat-label">今日使用</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 快速风格选择 -->
+    <section class="style-section">
+        <h2 class="section-title">默认回复风格</h2>
+        
+        <div class="style-selector">
+            <select id="defaultStyle" class="style-select">
+                <option value="friendly">友好/亲切风格</option>
+                <option value="formal">正式/商务风格</option>
+                <option value="concise">简洁/直接风格</option>
+                <option value="detailed">详细/全面风格</option>
+            </select>
+        </div>
+    </section>
+
+    <!-- 使用提示 -->
+    <section class="tips-section">
+        <h2 class="section-title">使用提示</h2>
+        
+        <div class="tip-item">
+            <div class="tip-icon">💡</div>
+            <div class="tip-text">在Gmail回复界面点击"AI回复"按钮即可使用</div>
+        </div>
+        
+        <div class="tip-item">
+            <div class="tip-icon">⚡</div>
+            <div class="tip-text">支持多种回复风格，可根据场景选择</div>
+        </div>
+        
+        <div class="tip-item">
+            <div class="tip-icon">🔧</div>
+            <div class="tip-text">可在设置中自定义API参数和回复模板</div>
+        </div>
+    </section>
+
+    <!-- 底部链接 -->
+    <footer class="popup-footer">
+        <div class="footer-links">
+            <a href="#" id="helpLink" class="footer-link">帮助文档</a>
+            <a href="#" id="feedbackLink" class="footer-link">意见反馈</a>
+        </div>
+        <div class="footer-copyright">
+            © 2024 Gmail AI回复助手
+        </div>
+    </footer>
+
+    <!-- 加载脚本 -->
+    <script src="popup.js"></script>
+</body>
+</html> 

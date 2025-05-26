@@ -1,0 +1,24 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆形渐变 -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a73e8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4285f4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景圆形 -->
+  <circle cx="64" cy="64" r="60" fill="url(#bgGradient)" stroke="none"/>
+  
+  <!-- 邮件外框 -->
+  <rect x="32" y="48" width="64" height="32" fill="none" stroke="white" stroke-width="3" rx="2"/>
+  
+  <!-- 邮件顶部折线 -->
+  <path d="M32 48 L64 68 L96 48" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- AI标识圆点 -->
+  <circle cx="88" cy="56" r="6" fill="#34a853"/>
+  
+  <!-- AI文字 -->
+  <text x="64" y="100" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">AI</text>
+</svg> 

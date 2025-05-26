@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail AI回复助手 - 设置</title>
+    <link rel="stylesheet" href="options.css">
+</head>
+<body>
+    <!-- 头部区域 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <svg class="logo-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+                <div class="logo-text">
+                    <h1>Gmail AI回复助手</h1>
+                    <p>设置与配置</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="saveAllBtn" class="btn btn-primary">保存所有设置</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- API配置区域 -->
+            <section class="config-section">
+                <div class="section-header">
+                    <h2>API配置</h2>
+                    <p>配置硅基流动API以使用DeepSeek-V3模型</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="apiKey">API密钥</label>
+                    <div class="input-group">
+                        <input type="password" id="apiKey" placeholder="请输入硅基流动API密钥">
+                        <button type="button" id="toggleApiKey" class="btn btn-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <small class="help-text">默认已提供API密钥，您也可以使用自己的密钥</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="model">AI模型</label>
+                    <select id="model">
+                        <option value="deepseek-v3">DeepSeek-V3 (推荐)</option>
+                        <option value="deepseek-chat">DeepSeek-Chat</option>
+                        <option value="deepseek-coder">DeepSeek-Coder</option>
+                    </select>
+                    <small class="help-text">选择用于生成回复的AI模型</small>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="maxTokens">最大Token数</label>
+                        <input type="number" id="maxTokens" min="100" max="4000" value="1000">
+                        <small class="help-text">控制回复长度 (100-4000)</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="temperature">创造性</label>
+                        <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7">
+                        <div class="range-labels">
+                            <span>保守</span>
+                            <span id="temperatureValue">0.7</span>
+                            <span>创新</span>
+                        </div>
+                        <small class="help-text">控制回复的创造性程度</small>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" id="testConnectionBtn" class="btn btn-secondary">测试连接</button>
+                    <div id="connectionStatus" class="status-indicator"></div>
+                </div>
+            </section>
+
+            <!-- 回复设置区域 -->
+            <section class="config-section">
+                <div class="section-header">
+                    <h2>回复设置</h2>
+                    <p>自定义AI回复的行为和风格</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="defaultStyle">默认回复风格</label>
+                    <select id="defaultStyle">
+                        <option value="friendly">友好/亲切风格</option>
+                        <option value="formal">正式/商务风格</option>
+                        <option value="concise">简洁/直接风格</option>
+                        <option value="detailed">详细/全面风格</option>
+                    </select>
+                    <small class="help-text">设置默认的回复风格，可在使用时临时更改</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>功能选项</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="autoGenerate">
+                            <span class="checkmark"></span>
+                            自动生成回复建议
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="showNotifications">
+                            <span class="checkmark"></span>
+                            显示操作通知
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="saveHistory">
+                            <span class="checkmark"></span>
+                            保存回复历史
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="replyCount">生成回复数量</label>
+                    <select id="replyCount">
+                        <option value="3">3个回复建议</option>
+                        <option value="4">4个回复建议</option>
+                        <option value="5">5个回复建议</option>
+                    </select>
+                    <small class="help-text">每次生成的回复建议数量</small>
+                </div>
+            </section>
+
+            <!-- 高级设置区域 -->
+            <section class="config-section">
+                <div class="section-header">
+                    <h2>高级设置</h2>
+                    <p>针对高级用户的详细配置选项</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="customPrompt">自定义提示词</label>
+                    <textarea id="customPrompt" rows="4" placeholder="可选：输入自定义的系统提示词来调整AI回复行为"></textarea>
+                    <small class="help-text">留空使用默认提示词，自定义提示词将覆盖默认设置</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="language">回复语言</label>
+                    <select id="language">
+                        <option value="auto">自动检测</option>
+                        <option value="zh">中文</option>
+                        <option value="en">英文</option>
+                    </select>
+                    <small class="help-text">强制使用特定语言回复，或自动检测邮件语言</small>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="timeout">请求超时 (秒)</label>
+                        <input type="number" id="timeout" min="5" max="60" value="30">
+                        <small class="help-text">API请求超时时间</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="retryCount">重试次数</label>
+                        <input type="number" id="retryCount" min="0" max="5" value="2">
+                        <small class="help-text">请求失败时的重试次数</small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 数据管理区域 -->
+            <section class="config-section">
+                <div class="section-header">
+                    <h2>数据管理</h2>
+                    <p>管理扩展数据和使用统计</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalRepliesCount">0</div>
+                        <div class="stat-label">总回复数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="todayRepliesCount">0</div>
+                        <div class="stat-label">今日回复</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="avgResponseTime">0ms</div>
+                        <div class="stat-label">平均响应时间</div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" id="exportDataBtn" class="btn btn-secondary">导出数据</button>
+                    <button type="button" id="importDataBtn" class="btn btn-secondary">导入数据</button>
+                    <button type="button" id="clearDataBtn" class="btn btn-danger">清除所有数据</button>
+                    <input type="file" id="importFileInput" accept=".json" style="display: none;">
+                </div>
+            </section>
+
+            <!-- 关于区域 -->
+            <section class="config-section">
+                <div class="section-header">
+                    <h2>关于</h2>
+                    <p>扩展信息和帮助资源</p>
+                </div>
+                
+                <div class="about-content">
+                    <div class="version-info">
+                        <h3>Gmail AI回复助手 v1.0.0</h3>
+                        <p>基于DeepSeek-V3模型的智能邮件回复工具</p>
+                    </div>
+                    
+                    <div class="links-grid">
+                        <a href="#" class="link-card" id="helpLink">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="12" cy="17" r="1" fill="currentColor"/>
+                            </svg>
+                            <div>
+                                <h4>帮助文档</h4>
+                                <p>查看使用说明</p>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="link-card" id="feedbackLink">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <div>
+                                <h4>意见反馈</h4>
+                                <p>报告问题或建议</p>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="link-card" id="updateLink">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <div>
+                                <h4>检查更新</h4>
+                                <p>获取最新版本</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 通知容器 -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- 加载脚本 -->
+    <script src="options.js"></script>
+</body>
+</html> 

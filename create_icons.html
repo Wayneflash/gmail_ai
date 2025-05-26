@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>生成Gmail AI回复助手图标</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .icon-container { margin: 20px 0; }
+        canvas { border: 1px solid #ccc; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Gmail AI回复助手图标生成器</h1>
+    
+    <div class="icon-container">
+        <h3>16x16 图标</h3>
+        <canvas id="icon16" width="16" height="16"></canvas>
+    </div>
+    
+    <div class="icon-container">
+        <h3>32x32 图标</h3>
+        <canvas id="icon32" width="32" height="32"></canvas>
+    </div>
+    
+    <div class="icon-container">
+        <h3>48x48 图标</h3>
+        <canvas id="icon48" width="48" height="48"></canvas>
+    </div>
+    
+    <div class="icon-container">
+        <h3>128x128 图标</h3>
+        <canvas id="icon128" width="128" height="128"></canvas>
+    </div>
+    
+    <button onclick="downloadIcons()">下载所有图标</button>
+    
+    <script>
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            const center = size / 2;
+            
+            // 清除画布
+            ctx.clearRect(0, 0, size, size);
+            
+            // 设置背景渐变
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#1a73e8');
+            gradient.addColorStop(1, '#4285f4');
+            
+            // 绘制圆形背景
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(center, center, center - 2, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // 绘制邮件图标
+            ctx.strokeStyle = 'white';
+            ctx.fillStyle = 'white';
+            ctx.lineWidth = Math.max(1, size / 16);
+            
+            // 邮件外框
+            const mailWidth = size * 0.6;
+            const mailHeight = size * 0.4;
+            const mailX = (size - mailWidth) / 2;
+            const mailY = (size - mailHeight) / 2;
+            
+            ctx.beginPath();
+            ctx.rect(mailX, mailY, mailWidth, mailHeight);
+            ctx.stroke();
+            
+            // 邮件顶部三角形
+            ctx.beginPath();
+            ctx.moveTo(mailX, mailY);
+            ctx.lineTo(center, mailY + mailHeight * 0.4);
+            ctx.lineTo(mailX + mailWidth, mailY);
+            ctx.stroke();
+            
+            // AI标识 - 小圆点
+            const dotSize = Math.max(2, size / 8);
+            ctx.fillStyle = '#34a853';
+            ctx.beginPath();
+            ctx.arc(mailX + mailWidth - dotSize, mailY + dotSize, dotSize / 2, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        
+        // 绘制所有尺寸的图标
+        drawIcon(document.getElementById('icon16'), 16);
+        drawIcon(document.getElementById('icon32'), 32);
+        drawIcon(document.getElementById('icon48'), 48);
+        drawIcon(document.getElementById('icon128'), 128);
+        
+        function downloadIcons() {
+            const sizes = [16, 32, 48, 128];
+            sizes.forEach(size => {
+                const canvas = document.getElementById(`icon${size}`);
+                const link = document.createElement('a');
+                link.download = `icon${size}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+    </script>
+</body>
+</html> 

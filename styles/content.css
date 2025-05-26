@@ -1,0 +1,383 @@
+/**
+ * Gmail AI回复助手 - 内容脚本样式
+ * 定义注入到Gmail页面中的AI回复界面样式
+ */
+
+/* AI回复按钮样式 */
+.ai-reply-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 6px 12px !important;
+    background: #1a73e8 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 4px !important;
+    font-size: 13px !important;
+    font-family: 'Google Sans', Roboto, sans-serif !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+}
+
+.ai-reply-button:hover {
+    background: #1557b0 !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15) !important;
+}
+
+.ai-reply-button:active {
+    background: #1346a0 !important;
+    transform: translateY(1px) !important;
+}
+
+.ai-reply-button svg {
+    width: 16px !important;
+    height: 16px !important;
+    stroke: currentColor !important;
+}
+
+/* AI回复工具栏样式 */
+.ai-reply-toolbar {
+    margin: 8px 0 !important;
+    padding: 8px !important;
+    border-top: 1px solid #e0e0e0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    background: #f8f9fa !important;
+    border-radius: 0 0 4px 4px !important;
+}
+
+/* AI回复面板样式 */
+.ai-reply-panel {
+    background: white !important;
+    border: 1px solid #dadce0 !important;
+    border-radius: 8px !important;
+    margin: 12px 0 !important;
+    padding: 16px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    font-family: 'Google Sans', Roboto, sans-serif !important;
+    max-width: 100% !important;
+    z-index: 1000 !important;
+    position: relative !important;
+}
+
+.ai-reply-panel * {
+    box-sizing: border-box !important;
+}
+
+/* AI回复面板头部 */
+.ai-reply-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 16px !important;
+}
+
+.ai-reply-header h3 {
+    margin: 0 !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: #202124 !important;
+}
+
+.ai-reply-close {
+    background: none !important;
+    border: none !important;
+    font-size: 18px !important;
+    cursor: pointer !important;
+    color: #5f6368 !important;
+    padding: 4px !important;
+    border-radius: 50% !important;
+    width: 28px !important;
+    height: 28px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background-color 0.2s ease !important;
+}
+
+.ai-reply-close:hover {
+    background: #f1f3f4 !important;
+}
+
+/* 回复风格选择器 */
+.ai-reply-styles {
+    margin-bottom: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+}
+
+.ai-reply-styles label {
+    font-size: 14px !important;
+    color: #5f6368 !important;
+    font-weight: 500 !important;
+}
+
+.style-selector {
+    padding: 6px 8px !important;
+    border: 1px solid #dadce0 !important;
+    border-radius: 4px !important;
+    font-size: 13px !important;
+    background: white !important;
+    color: #202124 !important;
+    cursor: pointer !important;
+    transition: border-color 0.2s ease !important;
+}
+
+.style-selector:focus {
+    outline: none !important;
+    border-color: #1a73e8 !important;
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2) !important;
+}
+
+.regenerate-btn {
+    padding: 6px 12px !important;
+    background: #1a73e8 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 4px !important;
+    font-size: 13px !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease !important;
+}
+
+.regenerate-btn:hover {
+    background: #1557b0 !important;
+}
+
+/* 加载动画 */
+.loading {
+    text-align: center !important;
+    padding: 20px !important;
+    color: #5f6368 !important;
+}
+
+.loading div:first-child {
+    display: inline-block !important;
+    width: 20px !important;
+    height: 20px !important;
+    border: 2px solid #e0e0e0 !important;
+    border-top: 2px solid #1a73e8 !important;
+    border-radius: 50% !important;
+    animation: ai-reply-spin 1s linear infinite !important;
+}
+
+@keyframes ai-reply-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 回复选项样式 */
+.reply-option {
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 6px !important;
+    margin-bottom: 12px !important;
+    overflow: hidden !important;
+    transition: border-color 0.2s ease !important;
+}
+
+.reply-option:hover {
+    border-color: #dadce0 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+}
+
+.reply-content {
+    padding: 12px !important;
+    background: #f8f9fa !important;
+    white-space: pre-wrap !important;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    color: #202124 !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+}
+
+.reply-actions {
+    padding: 8px 12px !important;
+    background: white !important;
+    display: flex !important;
+    gap: 8px !important;
+    align-items: center !important;
+}
+
+.use-reply-btn {
+    padding: 6px 12px !important;
+    background: #1a73e8 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 4px !important;
+    font-size: 12px !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease !important;
+}
+
+.use-reply-btn:hover {
+    background: #1557b0 !important;
+}
+
+.copy-reply-btn {
+    padding: 6px 12px !important;
+    background: #f8f9fa !important;
+    color: #5f6368 !important;
+    border: 1px solid #dadce0 !important;
+    border-radius: 4px !important;
+    font-size: 12px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.copy-reply-btn:hover {
+    background: #e8f0fe !important;
+    color: #1a73e8 !important;
+    border-color: #1a73e8 !important;
+}
+
+/* 错误状态样式 */
+.error-message {
+    text-align: center !important;
+    padding: 20px !important;
+    color: #d93025 !important;
+    background: #fce8e6 !important;
+    border-radius: 4px !important;
+    margin: 12px 0 !important;
+}
+
+.retry-btn {
+    margin-top: 8px !important;
+    padding: 6px 12px !important;
+    background: #1a73e8 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-size: 13px !important;
+}
+
+/* 通知样式 */
+.ai-reply-notification {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    padding: 12px 16px !important;
+    border-radius: 4px !important;
+    font-size: 14px !important;
+    z-index: 10000 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+    font-family: 'Google Sans', Roboto, sans-serif !important;
+    max-width: 300px !important;
+    word-wrap: break-word !important;
+}
+
+.ai-reply-notification.success {
+    background: #4caf50 !important;
+    color: white !important;
+}
+
+.ai-reply-notification.error {
+    background: #f44336 !important;
+    color: white !important;
+}
+
+.ai-reply-notification.info {
+    background: #2196f3 !important;
+    color: white !important;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .ai-reply-panel {
+        margin: 8px 0 !important;
+        padding: 12px !important;
+    }
+    
+    .ai-reply-styles {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+    
+    .style-selector {
+        width: 100% !important;
+        max-width: 200px !important;
+    }
+    
+    .reply-actions {
+        flex-direction: column !important;
+        gap: 6px !important;
+    }
+    
+    .use-reply-btn,
+    .copy-reply-btn {
+        width: 100% !important;
+        text-align: center !important;
+    }
+}
+
+/* 确保与Gmail样式兼容 */
+.ai-reply-panel,
+.ai-reply-panel * {
+    font-family: 'Google Sans', Roboto, RobotoDraft, Helvetica, Arial, sans-serif !important;
+}
+
+/* 防止Gmail样式覆盖 */
+.ai-reply-panel button {
+    font-family: inherit !important;
+    font-size: inherit !important;
+}
+
+.ai-reply-panel select {
+    font-family: inherit !important;
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+    .ai-reply-panel {
+        border: 2px solid #000 !important;
+    }
+    
+    .ai-reply-button {
+        border: 1px solid #000 !important;
+    }
+    
+    .reply-option {
+        border: 2px solid #000 !important;
+    }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+    .ai-reply-panel {
+        background: #2d2d30 !important;
+        border-color: #3c3c3c !important;
+        color: #cccccc !important;
+    }
+    
+    .ai-reply-header h3 {
+        color: #cccccc !important;
+    }
+    
+    .ai-reply-close {
+        color: #cccccc !important;
+    }
+    
+    .ai-reply-close:hover {
+        background: #3c3c3c !important;
+    }
+    
+    .reply-content {
+        background: #1e1e1e !important;
+        color: #cccccc !important;
+        border-color: #3c3c3c !important;
+    }
+    
+    .reply-actions {
+        background: #2d2d30 !important;
+    }
+    
+    .style-selector {
+        background: #1e1e1e !important;
+        border-color: #3c3c3c !important;
+        color: #cccccc !important;
+    }
+} 

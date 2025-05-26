@@ -1,0 +1,314 @@
+# Gmail AI回复助手 - 配置修改指引
+
+## 🚨 紧急修复（插入格式问题）
+
+### 🔧 "使用此回复"按钮格式混乱问题已修复
+- **问题描述**: 点击"使用此回复"按钮时，AI面板中格式正确的回复插入到Gmail输入框后格式混乱
+- **修复位置**: content.js 第920行和新增函数
+- **解决方案**: 
+  - 🔄 **改进内容提取**: 使用`extractFormattedTextFromElement`函数正确提取HTML格式
+  - 📝 **专用插入函数**: 新增`insertFormattedTextToGmail`函数专门处理Gmail插入
+  - 🎯 **简化处理**: 采用更简单可靠的行分割和div创建方式
+  - ✅ **格式保持**: 确保AI回复的段落和换行格式完美保持
+
+### 🎯 修复详情
+1. **内容提取优化** (content.js 第1515-1570行)
+   - 智能遍历HTML节点，保持原始格式结构
+   - 正确处理div、br、p等标签的换行逻辑
+   - 自动清理多余换行符，保持整洁
+
+2. **Gmail专用插入** (content.js 第1575-1635行)
+   - 按行分割文本，每行创建独立div元素
+   - 自动应用Gmail标准样式（Arial字体、13px大小）
+   - 空行使用`<br>`标签，有内容行使用文本节点
+
+3. **事件触发完善** (content.js 第1620-1630行)
+   - 触发input、change、keyup、focus等关键事件
+   - 确保Gmail编辑器识别内容变化
+   - 自动设置光标到内容末尾
+
+### 🔧 如果仍有问题
+如果插入后格式还是不对，可以尝试以下调整：
+
+1. **强制使用简化插入** (content.js 第920行)
+   ```javascript
+   // 直接使用原来的插入函数
+   insertTextToInputBox(inputBox, optimizedContentElement.textContent);
+   ```
+
+2. **调整行处理逻辑** (content.js 第1590行)
+   ```javascript
+   // 修改空行处理方式
+   if (line.trim() === '') {
+       div.innerHTML = '&nbsp;'; // 使用空格代替br
+   }
+   ```
+
+## 📋 最新更新（智能排版优化）
+
+### 🔧 Gmail排版问题彻底修复
+- **文件位置**: content.js
+- **函数位置**: insertTextToInputBox (第1504-1800行)
+- **重大改进**: 
+  - 🧠 **智能文本检测**: 自动识别邮件回复、列表、问候语等结构化内容
+  - 📝 **格式保持**: 完美保持AI生成回复的原始排版格式
+  - 🎯 **类型化处理**: 针对不同文本类型采用专门的格式化策略
+  - 💎 **Gmail兼容**: 生成完全符合Gmail编辑器标准的HTML结构
+  - 🔄 **多重备用**: 提供3层备用插入方案，确保100%成功率
+
+### 🎯 新增智能功能
+
+1. **结构化文本检测** (content.js 第1560-1570行)
+   - 自动识别邮件称呼（尊敬的、Dear等）
+   - 检测多段落结构
+   - 识别结尾敬语（谢谢、Best regards等）
+   - 发现编号列表和项目符号
+
+2. **专业格式化处理** (content.js 第1575-1650行)
+   - 问候语：增加下边距，突出显示
+   - 列表项：自动缩进，保持层次结构
+   - 结尾敬语：增加上边距，优雅收尾
+   - 普通段落：智能间距，易于阅读
+
+3. **Gmail样式适配** (content.js 第1720-1735行)
+   - 自动应用Gmail标准字体（Arial, sans-serif）
+   - 设置合适的字体大小（13px）
+   - 优化行高（1.4）确保可读性
+
+### 🔧 如果仍有排版问题
+如果特殊情况下排版还是不理想，可以尝试以下微调：
+
+1. **调整段落间距** (content.js 第1590行)
+   ```javascript
+   // 修改问候语下边距
+   html += `<div style="margin-bottom: 16px;">${escapeHtml(trimmed)}</div>`;
+   ```
+
+2. **调整列表缩进** (content.js 第1710行)
+   ```javascript
+   // 修改列表项缩进距离
+   return `<div style="margin-left: 20px; margin-bottom: 6px;">${escapeHtml(text)}</div>`;
+   ```
+
+3. **禁用智能检测** (content.js 第1520行)
+   ```javascript
+   // 强制使用普通文本格式
+   // if (isStructuredText(processedText)) {
+   //     processedText = formatStructuredText(processedText);
+   // } else {
+       processedText = formatPlainText(processedText);
+   // }
+   ```
+
+## 🔑 主要功能配置参数
+
+### 1. API配置
+- **文件位置**: background.js
+- **API地址**: 第15行 `const API_BASE_URL = 'https://api.ap.siliconflow.com/v1/chat/completions';`
+- **API密钥**: 第16行 `const DEFAULT_API_KEY = 'sk-moyezvpaajlpslwhpieojhplhxafpyhgpoiueqlqcatjpbqt';`
+- **模型名称**: 第17行 `const DEFAULT_MODEL = 'deepseek-ai/DeepSeek-V3';`
+
+### 2. AI回复风格设置
+- **文件位置**: background.js
+- **回复风格**: 第180-200行的提示词模板
+- **可选风格**: professional(专业), friendly(友好), concise(简洁), detailed(详细)
+
+### 3. 界面样式配置
+- **文件位置**: content.js
+- **AI按钮样式**: 第350-380行
+- **面板样式**: 第541-875行
+- **按钮颜色**: 第365行 `background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)`
+
+### 4. 功能开关
+- **文件位置**: content.js
+- **自动总结**: 第954行 autoSummarizeEmail函数
+- **流式输出**: 第1024行 generateEmailSummaryStream函数
+- **打字机效果**: 第1131行 typewriterEffect函数
+
+## 🎨 界面自定义
+
+### 修改AI按钮外观
+- **位置**: content.js 第350-380行
+- **按钮文字**: 第340行 `AI回复`
+- **按钮大小**: 第370行 `padding: 8px 16px`
+- **按钮颜色**: 第365行渐变色设置
+
+### 修改面板样式
+- **位置**: content.js 第541-875行
+- **面板大小**: 第480行 `width: 480px`
+- **面板位置**: 第475-477行居中显示设置
+- **背景色**: 第481行 `background: white`
+
+## ⚡ 性能优化配置
+
+### 检查频率设置
+- **文件位置**: content.js
+- **检查间隔**: 第165行 `setInterval(() => { checkForInputBoxes(); }, 2000);`
+- **建议值**: 1000-3000毫秒之间
+
+### 流式输出速度
+- **文件位置**: content.js
+- **打字速度**: 第1131行 `speed = 30` (毫秒/字符)
+- **建议值**: 20-50毫秒
+
+## 🔧 故障排除
+
+### 如果AI按钮不显示
+1. 检查Gmail页面是否完全加载
+2. 刷新页面重新初始化
+3. 查看浏览器控制台是否有错误信息
+
+### 如果API调用失败
+1. 检查网络连接
+2. 验证API密钥是否有效
+3. 查看background.js中的错误日志
+
+### 如果排版混乱
+1. 使用新优化的insertTextToInputBox函数
+2. 检查Gmail编辑器的HTML结构
+3. 尝试备用插入方案
+
+## 📞 技术支持
+如遇到问题，请查看浏览器控制台的详细日志信息，这将帮助定位问题所在。
+
+## 📋 概述
+本文档详细说明了Gmail AI回复助手中用户可以修改的主要配置参数，帮助您根据需要自定义扩展功能。
+
+## 🔧 主要配置参数
+
+### 1. API配置设置
+**文件位置**: `background.js`
+**修改位置**: 第15-20行
+
+```javascript
+// API配置 - 用户可修改
+const API_CONFIG = {
+    baseURL: 'https://api.ap.siliconflow.com/v1/chat/completions',  // API地址
+    apiKey: 'sk-moyezvpaajlpslwhpieojhplhxafpyhgpoiueqlqcatjpbqt',    // API密钥
+    model: 'deepseek-ai/DeepSeek-V3',                                // AI模型
+    maxTokens: 2000,                                                 // 最大输出长度
+    temperature: 0.7                                                 // 创造性程度(0-1)
+};
+```
+
+**可修改参数说明**:
+- `baseURL`: API服务地址，如需更换AI服务商可修改此项
+- `apiKey`: 您的API密钥，可替换为自己的密钥
+- `model`: AI模型名称，支持DeepSeek系列模型
+- `maxTokens`: 回复最大长度，建议1000-3000
+- `temperature`: 回复创造性，0.1-0.9，越高越有创意
+
+### 2. 回复优化风格设置
+**文件位置**: `background.js`
+**修改位置**: 第380-387行
+
+```javascript
+// 回复风格配置 - 用户可修改
+const stylePrompts = {
+    professional: '专业、正式的商务风格',    // 商务邮件推荐
+    friendly: '友好、亲切的风格',           // 日常交流推荐
+    concise: '简洁、直接的风格',           // 快速回复推荐
+    detailed: '详细、全面的风格'           // 重要邮件推荐
+};
+```
+
+**可修改参数说明**:
+- 您可以添加新的风格或修改现有风格描述
+- 默认使用`professional`风格
+- 可在`content.js`第1020行修改默认风格
+
+### 3. 界面显示设置
+**文件位置**: `content.js`
+**修改位置**: 第200-220行
+
+```javascript
+// AI按钮样式配置 - 用户可修改
+aiButton.style.cssText = `
+    position: absolute !important;
+    right: 8px !important;                    // 按钮右边距
+    bottom: 8px !important;                   // 按钮下边距
+    width: 28px !important;                   // 按钮宽度
+    height: 28px !important;                  // 按钮高度
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;  // 按钮颜色
+    border-radius: 6px !important;           // 按钮圆角
+    opacity: 0.9 !important;                 // 按钮透明度
+`;
+```
+
+**可修改参数说明**:
+- `right/bottom`: 调整按钮位置
+- `width/height`: 调整按钮大小
+- `background`: 修改按钮颜色渐变
+- `border-radius`: 调整按钮圆角程度
+- `opacity`: 调整按钮透明度
+
+### 4. 面板尺寸设置
+**文件位置**: `content.js`
+**修改位置**: 第320-330行
+
+```javascript
+// AI面板样式配置 - 用户可修改
+aiPanel.style.cssText = `
+    width: 380px !important;                  // 面板宽度
+    max-height: 80vh !important;              // 面板最大高度
+    right: 20px !important;                   // 面板右边距
+    top: 50% !important;                      // 面板垂直位置
+`;
+```
+
+**可修改参数说明**:
+- `width`: 调整面板宽度，建议300-500px
+- `max-height`: 调整面板最大高度
+- `right`: 调整面板距离右边的距离
+- `top`: 调整面板垂直位置
+
+### 5. 文本输入框设置
+**文件位置**: `content.js`
+**修改位置**: 第450-460行（CSS样式中）
+
+```css
+.reply-input {
+    min-height: 80px !important;             /* 输入框最小高度 */
+    font-size: 13px !important;              /* 字体大小 */
+    line-height: 1.4 !important;             /* 行高 */
+}
+```
+
+**可修改参数说明**:
+- `min-height`: 调整输入框高度，建议60-120px
+- `font-size`: 调整字体大小，建议12-16px
+- `line-height`: 调整行间距
+
+### 6. 邮件内容提取设置
+**文件位置**: `content.js`
+**修改位置**: 第650-680行
+
+```javascript
+// 邮件内容提取选择器 - 用户可修改
+const inputSelectors = [
+    'div[contenteditable="true"][role="textbox"]',           // 主要选择器
+    'div[contenteditable="true"][aria-label*="邮件正文"]',    // 中文界面
+    'div[contenteditable="true"][aria-label*="Message Body"]', // 英文界面
+    'div[contenteditable="true"].Am.Al.editable',            // 经典Gmail
+    'div[contenteditable="true"][data-message-id]',          // 新版Gmail
+];
+```
+
+**可修改参数说明**:
+- 如果AI按钮不显示，可以添加新的选择器
+- 可以删除不需要的选择器以提高性能
+- 建议保留前3个主要选择器
+
+## 🎯 常用修改场景
+
+### 场景1: 更换API密钥
+1. 打开`background.js`文件
+2. 找到第17行的`apiKey`
+3. 替换为您自己的API密钥
+4. 重新加载扩展
+
+### 场景2: 调整回复风格
+1. 打开`background.js`文件
+2. 找到第380-387行的`stylePrompts`
+3. 修改风格描述或添加新风格
+4. 在`

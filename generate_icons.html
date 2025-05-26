@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>生成扩展图标</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .icon-preview {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .icon-item {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #fafafa;
+        }
+        canvas { 
+            border: 1px solid #ccc; 
+            margin: 10px 0;
+            display: block;
+        }
+        button {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1557b0;
+        }
+        .download-all {
+            background: #34a853;
+            font-size: 16px;
+            padding: 12px 24px;
+            margin: 20px 0;
+        }
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gmail AI回复助手 - 图标生成器</h1>
+        
+        <div class="instructions">
+            <h3>使用说明：</h3>
+            <ol>
+                <li>点击"生成所有图标"按钮</li>
+                <li>图标将自动下载到您的下载文件夹</li>
+                <li>将下载的PNG文件放入项目的 <code>icons/</code> 文件夹中</li>
+                <li>重新加载Chrome扩展</li>
+            </ol>
+        </div>
+        
+        <div class="icon-preview">
+            <div class="icon-item">
+                <h4>16x16</h4>
+                <canvas id="icon16" width="16" height="16"></canvas>
+                <button onclick="downloadIcon(16)">下载</button>
+            </div>
+            
+            <div class="icon-item">
+                <h4>32x32</h4>
+                <canvas id="icon32" width="32" height="32"></canvas>
+                <button onclick="downloadIcon(32)">下载</button>
+            </div>
+            
+            <div class="icon-item">
+                <h4>48x48</h4>
+                <canvas id="icon48" width="48" height="48"></canvas>
+                <button onclick="downloadIcon(48)">下载</button>
+            </div>
+            
+            <div class="icon-item">
+                <h4>128x128</h4>
+                <canvas id="icon128" width="128" height="128"></canvas>
+                <button onclick="downloadIcon(128)">下载</button>
+            </div>
+        </div>
+        
+        <div style="text-align: center;">
+            <button class="download-all" onclick="downloadAllIcons()">🚀 生成所有图标</button>
+        </div>
+        
+        <div class="instructions">
+            <h3>图标说明：</h3>
+            <p>图标采用Google Material Design风格，包含邮件图标和AI标识，颜色与Gmail保持一致。</p>
+        </div>
+    </div>
+
+    <script>
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            const center = size / 2;
+            
+            // 清除画布
+            ctx.clearRect(0, 0, size, size);
+            
+            // 设置背景渐变
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#1a73e8');
+            gradient.addColorStop(1, '#4285f4');
+            
+            // 绘制圆形背景
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(center, center, center - 2, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // 设置邮件图标样式
+            ctx.strokeStyle = 'white';
+            ctx.fillStyle = 'white';
+            ctx.lineWidth = Math.max(1, size / 20);
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            // 计算邮件图标尺寸
+            const mailWidth = size * 0.5;
+            const mailHeight = size * 0.3;
+            const mailX = (size - mailWidth) / 2;
+            const mailY = (size - mailHeight) / 2;
+            
+            // 绘制邮件外框
+            ctx.beginPath();
+            ctx.roundRect(mailX, mailY, mailWidth, mailHeight, size / 32);
+            ctx.stroke();
+            
+            // 绘制邮件顶部折线
+            ctx.beginPath();
+            ctx.moveTo(mailX, mailY);
+            ctx.lineTo(center, mailY + mailHeight * 0.5);
+            ctx.lineTo(mailX + mailWidth, mailY);
+            ctx.stroke();
+            
+            // 绘制AI标识
+            const dotSize = Math.max(2, size / 16);
+            ctx.fillStyle = '#34a853';
+            ctx.beginPath();
+            ctx.arc(mailX + mailWidth - dotSize, mailY + dotSize, dotSize / 2, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // 为较大的图标添加AI文字
+            if (size >= 48) {
+                ctx.fillStyle = 'white';
+                ctx.font = `bold ${size / 8}px Arial, sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('AI', center, mailY + mailHeight + size / 8);
+            }
+        }
+        
+        // 兼容性处理：如果浏览器不支持roundRect，使用rect
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                this.rect(x, y, width, height);
+            };
+        }
+        
+        // 绘制所有尺寸的图标
+        function generateAllIcons() {
+            const sizes = [16, 32, 48, 128];
+            sizes.forEach(size => {
+                const canvas = document.getElementById(`icon${size}`);
+                drawIcon(canvas, size);
+            });
+        }
+        
+        // 下载单个图标
+        function downloadIcon(size) {
+            const canvas = document.getElementById(`icon${size}`);
+            const link = document.createElement('a');
+            link.download = `icon${size}.png`;
+            link.href = canvas.toDataURL('image/png');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // 下载所有图标
+        function downloadAllIcons() {
+            const sizes = [16, 32, 48, 128];
+            sizes.forEach((size, index) => {
+                setTimeout(() => {
+                    downloadIcon(size);
+                }, index * 200); // 延迟下载避免浏览器阻止
+            });
+            
+            // 显示成功消息
+            setTimeout(() => {
+                alert('所有图标已生成完成！请检查您的下载文件夹，然后将PNG文件复制到项目的 icons/ 文件夹中。');
+            }, 1000);
+        }
+        
+        // 页面加载时生成图标
+        window.onload = function() {
+            generateAllIcons();
+        };
+    </script>
+</body>
+</html> 
