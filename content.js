@@ -919,17 +919,11 @@ function bindNewAIPanelEvents(panel, inputBox, overlay) {
         useBtn.addEventListener('click', () => {
             const optimizedContentElement = panel.querySelector('.optimized-content');
             
-            // 获取HTML内容而不是纯文本
-            let contentToInsert = '';
-            
             if (optimizedContentElement) {
-                // 尝试获取格式化的文本内容
-                contentToInsert = extractFormattedTextFromElement(optimizedContentElement);
+                console.log('📝 准备插入优化后的回复...');
                 
-                console.log('📝 准备插入的内容:', contentToInsert);
-                
-                // 使用专门的Gmail插入函数
-                insertFormattedTextToGmail(inputBox, contentToInsert);
+                // 完整复制HTML内容到Gmail编辑器，保持所有格式和样式
+                insertCompleteFormattedContent(inputBox, optimizedContentElement);
             }
             
             panel.remove();
@@ -1890,13 +1884,8 @@ function applyGmailStyles(inputBox) {
  */
 function triggerGmailEvents(inputBox, text) {
     const events = [
-        'input',
-        'change', 
-        'keyup',
-        'paste',
-        'focus',
-        'blur',
-        'compositionend'
+        'input', 'change', 'keyup', 'focus', 'blur',
+        'DOMNodeInserted', 'DOMSubtreeModified'
     ];
     
     events.forEach(eventType => {
@@ -1907,11 +1896,11 @@ function triggerGmailEvents(inputBox, text) {
             });
             inputBox.dispatchEvent(event);
         } catch (e) {
-            console.log('事件触发失败:', eventType, e);
+            // 某些事件可能不支持，忽略错误
         }
     });
     
-    // 特殊的Gmail输入事件
+    // 特殊的输入事件
     try {
         const inputEvent = new InputEvent('input', {
             bubbles: true,
@@ -2090,6 +2079,163 @@ function showEmailSummary(emailContent, button) {
     }, 100);
 }
 
+/**
+ * 完整复制HTML内容到Gmail编辑器，保持所有格式和样式
+ */
+function insertCompleteFormattedContent(inputBox, sourceElement) {
+    try {
+        console.log('📝 开始完整复制HTML内容...');
+        
+        // 清空输入框
+        inputBox.innerHTML = '';
+        
+        // 方法1: 直接克隆HTML内容
+        try {
+            // 克隆源元素的所有子节点
+            const clonedContent = sourceElement.cloneNode(true);
+            
+            // 将克隆的内容移动到Gmail编辑器
+            while (clonedContent.firstChild) {
+                const child = clonedContent.firstChild;
+                
+                // 如果是元素节点，确保样式正确应用
+                if (child.nodeType === Node.ELEMENT_NODE) {
+                    // 保持原有样式，但确保Gmail兼容性
+                    ensureGmailCompatibility(child);
+                }
+                
+                inputBox.appendChild(child);
+            }
+            
+            console.log('✅ 方法1成功：直接克隆HTML内容');
+            
+        } catch (error) {
+            console.log('⚠️ 方法1失败，尝试方法2:', error);
+            
+            // 方法2: 复制innerHTML
+            try {
+                inputBox.innerHTML = sourceElement.innerHTML;
+                console.log('✅ 方法2成功：复制innerHTML');
+                
+            } catch (error2) {
+                console.log('⚠️ 方法2失败，尝试方法3:', error2);
+                
+                // 方法3: 逐个复制节点并保持样式
+                copyNodesWithStyles(sourceElement, inputBox);
+                console.log('✅ 方法3成功：逐个复制节点');
+            }
+        }
+        
+        // 确保最后有一个空的div（Gmail编辑器需要）
+        if (!inputBox.lastElementChild || 
+            (inputBox.lastElementChild.tagName === 'DIV' && 
+             inputBox.lastElementChild.innerHTML.trim() === '')) {
+            // 已经有空div，不需要添加
+        } else {
+            const lastDiv = document.createElement('div');
+            lastDiv.innerHTML = '<br>';
+            inputBox.appendChild(lastDiv);
+        }
+        
+        // 触发Gmail事件
+        triggerGmailEvents(inputBox, sourceElement.textContent || '');
+        
+        // 设置焦点和光标位置
+        setTimeout(() => {
+            setGmailCursor(inputBox);
+        }, 100);
+        
+        console.log('✅ 完整HTML内容插入完成');
+        
+    } catch (error) {
+        console.error('❌ 完整HTML插入失败:', error);
+        
+        // 最终备用方案：使用文本插入
+        const textContent = sourceElement.textContent || '';
+        insertFormattedTextToGmail(inputBox, textContent);
+    }
+}
+
+/**
+ * 确保元素与Gmail编辑器兼容
+ */
+function ensureGmailCompatibility(element) {
+    try {
+        // 如果是div元素，确保有基本样式
+        if (element.tagName === 'DIV') {
+            // 保持原有样式，但添加Gmail默认样式作为备用
+            if (!element.style.fontFamily) {
+                element.style.fontFamily = 'Arial, sans-serif';
+            }
+            if (!element.style.fontSize) {
+                element.style.fontSize = '13px';
+            }
+            if (!element.style.lineHeight) {
+                element.style.lineHeight = '1.4';
+            }
+        }
+        
+        // 递归处理子元素
+        for (let child of element.children) {
+            ensureGmailCompatibility(child);
+        }
+        
+    } catch (error) {
+        console.log('Gmail兼容性处理失败:', error);
+    }
+}
+
+/**
+ * 逐个复制节点并保持样式
+ */
+function copyNodesWithStyles(sourceElement, targetElement) {
+    try {
+        // 遍历源元素的所有子节点
+        for (let node of sourceElement.childNodes) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                // 文本节点直接复制
+                const textNode = document.createTextNode(node.textContent);
+                targetElement.appendChild(textNode);
+                
+            } else if (node.nodeType === Node.ELEMENT_NODE) {
+                // 元素节点：创建新元素并复制属性和样式
+                const newElement = document.createElement(node.tagName);
+                
+                // 复制所有属性
+                for (let attr of node.attributes) {
+                    newElement.setAttribute(attr.name, attr.value);
+                }
+                
+                // 复制计算样式
+                const computedStyle = window.getComputedStyle(node);
+                const importantStyles = [
+                    'color', 'backgroundColor', 'fontSize', 'fontFamily', 
+                    'fontWeight', 'fontStyle', 'textDecoration', 'lineHeight',
+                    'margin', 'marginTop', 'marginBottom', 'marginLeft', 'marginRight',
+                    'padding', 'paddingTop', 'paddingBottom', 'paddingLeft', 'paddingRight',
+                    'textAlign', 'textIndent', 'letterSpacing', 'wordSpacing'
+                ];
+                
+                for (let styleProp of importantStyles) {
+                    const styleValue = computedStyle.getPropertyValue(styleProp);
+                    if (styleValue && styleValue !== 'initial' && styleValue !== 'normal') {
+                        newElement.style[styleProp] = styleValue;
+                    }
+                }
+                
+                // 递归复制子节点
+                copyNodesWithStyles(node, newElement);
+                
+                targetElement.appendChild(newElement);
+            }
+        }
+        
+    } catch (error) {
+        console.error('逐个复制节点失败:', error);
+        throw error;
+    }
+}
+
 // 页面加载完成后初始化
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeExtension);
@@ -2105,4 +2251,6 @@ new MutationObserver(() => {
         lastUrl = url;
         setTimeout(initializeExtension, 1000);
     }
-}).observe(document, { subtree: true, childList: true }); 
+}).observe(document, { subtree: true, childList: true });
+
+console.log('Gmail AI回复助手内容脚本已加载 - 完整格式保持版本'); 
