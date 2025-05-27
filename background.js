@@ -73,7 +73,7 @@ const LANGUAGE_CONFIG = {
         prompts: {
             summary: "Please analyze the following email content and provide a concise summary in English. Include: 1) Email subject/topic, 2) Sender's intent, 3) Key information, 4) Action items needed. Format as clear bullet points:",
             reply: "Based on the following email content, generate a professional reply in English. Style: {style}. Email content:",
-            optimize: "Please optimize the following reply text in English to make it more professional and clear. Original text:"
+            optimize: "You are helping me write a professional email reply. I received an email and need to respond to the sender. Please optimize my draft reply to make it more professional and appropriate. Keep the same meaning but improve the tone, grammar, and structure. Make sure the reply is addressed TO THE SENDER (not to me). Here is the context:"
         },
         // 界面文本
         ui: {
@@ -150,7 +150,7 @@ const LANGUAGE_CONFIG = {
         prompts: {
             summary: "请分析以下邮件内容并用中文提供简洁的总结。包括：1) 邮件主题，2) 发件人意图，3) 关键信息，4) 需要回复的要点。请用清晰的要点格式：",
             reply: "根据以下邮件内容，用中文生成一个专业的回复。风格：{style}。邮件内容：",
-            optimize: "请用中文优化以下回复文本，使其更加专业和清晰。原始文本："
+            optimize: "你正在帮助我撰写专业的邮件回复。我收到了一封邮件，需要回复给发件人。请优化我的回复草稿，使其更加专业和得体。保持原意不变，但改进语气、语法和结构。确保回复是写给发件人的（不是写给我的）。以下是上下文："
         },
         // 界面文本
         ui: {
@@ -1102,16 +1102,23 @@ Tone: ${toneDescription}`;
         if (emailContext && emailContext.trim()) {
             prompt += `
 
-Original email content:
+ORIGINAL EMAIL I RECEIVED:
 ${emailContext}
 
----`;
+---
+
+MY DRAFT REPLY (please optimize this):
+${userReply}
+
+Please optimize my draft reply above to respond professionally to the original email. Make sure the optimized reply is addressed to the sender of the original email.`;
+        } else {
+            prompt += `
+
+MY DRAFT REPLY (please optimize this):
+${userReply}
+
+Please optimize this draft reply to make it more professional and appropriate.`;
         }
-
-        prompt += `
-
-User's reply draft:
-${userReply}`;
         
         const optimizedReply = await callAIAPI(prompt);
         
