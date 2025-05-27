@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail AI - Privacy Policy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+        }
+
+        .language-switch {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .lang-btn {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .lang-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .lang-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .content {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .language-content {
+            display: none;
+        }
+
+        .language-content.active {
+            display: block;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin: 30px 0 15px 0;
+            font-size: 1.8em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #34495e;
+            margin: 20px 0 10px 0;
+            font-size: 1.3em;
+        }
+
+        p, li {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .contact-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">📧</div>
+            <h1>Gmail AI</h1>
+            <p class="subtitle">Privacy Policy & Terms of Service</p>
+        </div>
+
+        <!-- Language Switch -->
+        <div class="language-switch">
+            <button class="lang-btn active" onclick="switchLanguage('en')">🇺🇸 English</button>
+            <button class="lang-btn" onclick="switchLanguage('zh')">🇨🇳 中文</button>
+        </div>
+
+        <!-- English Content -->
+        <div class="content">
+            <div id="en-content" class="language-content active">
+                <h2>🔒 Privacy Policy</h2>
+                
+                <div class="highlight">
+                    <strong>Last Updated:</strong> December 2024<br>
+                    <strong>Effective Date:</strong> December 2024
+                </div>
+
+                <p>Gmail AI ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our Chrome extension.</p>
+
+                <h3>📊 Information We Collect</h3>
+                <ul>
+                    <li><strong>Email Content:</strong> We temporarily process email content to provide AI-powered summarization and reply generation. This data is not stored permanently.</li>
+                    <li><strong>Usage Data:</strong> We may collect anonymous usage statistics to improve our service.</li>
+                    <li><strong>Settings:</strong> Your preferences and settings are stored locally in your browser.</li>
+                </ul>
+
+                <h3>🎯 How We Use Your Information</h3>
+                <ul>
+                    <li>To provide AI-powered email summarization and reply generation</li>
+                    <li>To improve our service quality and user experience</li>
+                    <li>To provide customer support when requested</li>
+                </ul>
+
+                <h3>🔐 Data Security</h3>
+                <ul>
+                    <li><strong>Local Processing:</strong> Most data processing occurs locally in your browser</li>
+                    <li><strong>HTTPS Encryption:</strong> All API communications are encrypted using HTTPS</li>
+                    <li><strong>No Permanent Storage:</strong> Email content is not stored on our servers</li>
+                    <li><strong>Minimal Permissions:</strong> We only request necessary browser permissions</li>
+                </ul>
+
+                <h3>🤝 Third-Party Services</h3>
+                <p>We use DeepSeek AI services for email processing. Their privacy policy applies to data processed through their API. We ensure all data transmission is encrypted and secure.</p>
+
+                <h3>🍪 Cookies and Local Storage</h3>
+                <p>We use browser local storage to save your preferences and settings. No tracking cookies are used.</p>
+
+                <h3>👤 Your Rights</h3>
+                <ul>
+                    <li>You can disable the extension at any time</li>
+                    <li>You can clear all stored data by removing the extension</li>
+                    <li>You have control over what email content is processed</li>
+                </ul>
+
+                <h3>📧 Contact Information</h3>
+                <div class="contact-info">
+                    <p>If you have any questions about this Privacy Policy, please contact us at:</p>
+                    <p><strong>Email:</strong> support@gmail-ai.com</p>
+                    <p><strong>Website:</strong> https://gmail-ai.com</p>
+                </div>
+
+                <h2>📋 Terms of Service</h2>
+
+                <h3>✅ Acceptance of Terms</h3>
+                <p>By installing and using Gmail AI, you agree to these Terms of Service.</p>
+
+                <h3>📝 Service Description</h3>
+                <p>Gmail AI is a Chrome extension that provides AI-powered email summarization and reply generation for Gmail users.</p>
+
+                <h3>🚫 Prohibited Uses</h3>
+                <ul>
+                    <li>Using the service for illegal activities</li>
+                    <li>Attempting to reverse engineer or modify the extension</li>
+                    <li>Using the service to send spam or malicious content</li>
+                </ul>
+
+                <h3>⚠️ Disclaimer</h3>
+                <p>Gmail AI is provided "as is" without warranties. We are not responsible for the accuracy of AI-generated content. Users should review all generated content before sending.</p>
+
+                <h3>🔄 Updates</h3>
+                <p>We may update these terms and privacy policy from time to time. Continued use of the service constitutes acceptance of updated terms.</p>
+            </div>
+
+            <!-- Chinese Content -->
+            <div id="zh-content" class="language-content">
+                <h2>🔒 隐私政策</h2>
+                
+                <div class="highlight">
+                    <strong>最后更新:</strong> 2024年12月<br>
+                    <strong>生效日期:</strong> 2024年12月
+                </div>
+
+                <p>Gmail AI（"我们"）致力于保护您的隐私。本隐私政策说明我们如何收集、使用和保护您在使用我们的Chrome扩展时的信息。</p>
+
+                <h3>📊 我们收集的信息</h3>
+                <ul>
+                    <li><strong>邮件内容:</strong> 我们临时处理邮件内容以提供AI驱动的总结和回复生成。此数据不会永久存储。</li>
+                    <li><strong>使用数据:</strong> 我们可能收集匿名使用统计数据以改进我们的服务。</li>
+                    <li><strong>设置:</strong> 您的偏好和设置存储在您的浏览器本地。</li>
+                </ul>
+
+                <h3>🎯 我们如何使用您的信息</h3>
+                <ul>
+                    <li>提供AI驱动的邮件总结和回复生成</li>
+                    <li>改进我们的服务质量和用户体验</li>
+                    <li>在您请求时提供客户支持</li>
+                </ul>
+
+                <h3>🔐 数据安全</h3>
+                <ul>
+                    <li><strong>本地处理:</strong> 大部分数据处理在您的浏览器本地进行</li>
+                    <li><strong>HTTPS加密:</strong> 所有API通信都使用HTTPS加密</li>
+                    <li><strong>无永久存储:</strong> 邮件内容不会存储在我们的服务器上</li>
+                    <li><strong>最小权限:</strong> 我们只请求必要的浏览器权限</li>
+                </ul>
+
+                <h3>🤝 第三方服务</h3>
+                <p>我们使用DeepSeek AI服务进行邮件处理。他们的隐私政策适用于通过其API处理的数据。我们确保所有数据传输都是加密和安全的。</p>
+
+                <h3>🍪 Cookie和本地存储</h3>
+                <p>我们使用浏览器本地存储来保存您的偏好和设置。不使用跟踪Cookie。</p>
+
+                <h3>👤 您的权利</h3>
+                <ul>
+                    <li>您可以随时禁用扩展</li>
+                    <li>您可以通过删除扩展来清除所有存储的数据</li>
+                    <li>您可以控制处理哪些邮件内容</li>
+                </ul>
+
+                <h3>📧 联系信息</h3>
+                <div class="contact-info">
+                    <p>如果您对本隐私政策有任何疑问，请通过以下方式联系我们：</p>
+                    <p><strong>邮箱:</strong> support@gmail-ai.com</p>
+                    <p><strong>网站:</strong> https://gmail-ai.com</p>
+                </div>
+
+                <h2>📋 服务条款</h2>
+
+                <h3>✅ 条款接受</h3>
+                <p>通过安装和使用Gmail AI，您同意这些服务条款。</p>
+
+                <h3>📝 服务描述</h3>
+                <p>Gmail AI是一个Chrome扩展，为Gmail用户提供AI驱动的邮件总结和回复生成功能。</p>
+
+                <h3>🚫 禁止用途</h3>
+                <ul>
+                    <li>将服务用于非法活动</li>
+                    <li>尝试逆向工程或修改扩展</li>
+                    <li>使用服务发送垃圾邮件或恶意内容</li>
+                </ul>
+
+                <h3>⚠️ 免责声明</h3>
+                <p>Gmail AI按"现状"提供，不提供任何保证。我们不对AI生成内容的准确性负责。用户应在发送前审查所有生成的内容。</p>
+
+                <h3>🔄 更新</h3>
+                <p>我们可能会不时更新这些条款和隐私政策。继续使用服务即表示接受更新的条款。</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; 2024 Gmail AI. All rights reserved. | <a href="#contact">Contact Us</a> | <a href="#support">Support</a></p>
+        </div>
+    </div>
+
+    <script>
+        function switchLanguage(lang) {
+            // Hide all language content
+            document.querySelectorAll('.language-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Show selected language content
+            document.getElementById(lang + '-content').classList.add('active');
+            
+            // Update button states
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update page language attribute
+            document.documentElement.lang = lang;
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll animation
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.header');
+            const speed = scrolled * 0.5;
+            parallax.style.transform = `translateY(${speed}px)`;
+        });
+    </script>
+</body>
+</html> 

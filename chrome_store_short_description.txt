@@ -1,0 +1,48 @@
+🚀 Transform Your Gmail with AI-Powered Email Assistant
+
+Gmail AI revolutionizes email communication with intelligent summarization and professional reply generation powered by DeepSeek-V3 AI model.
+
+✨ KEY FEATURES:
+• Instant Email Summarization - AI analyzes and summarizes emails in seconds
+• Smart Reply Generation - One-click professional responses with 6 tone styles
+• Zero Setup Required - Works immediately after installation
+• Multi-language Support - Seamlessly handles English and Chinese emails
+• Monica AI-Inspired UI - Beautiful, intuitive interface design
+• Real-time Streaming - Live AI responses with typewriter effect
+
+🎯 6 PROFESSIONAL TONE STYLES:
+• Natural - Everyday communication
+• Professional - Business correspondence  
+• Friendly - Personal contacts
+• Concise - Quick responses
+• Creative - Marketing & engagement
+• Polite - Formal occasions
+
+🚀 HOW IT WORKS:
+1. Install extension (zero configuration needed)
+2. Open Gmail and click reply
+3. AI button appears automatically
+4. View instant email summary
+5. Choose your preferred tone style
+6. Generate optimized reply
+7. One-click insert into Gmail
+
+🏆 BENEFITS:
+• Save 70% time on email responses
+• Maintain professional communication
+• Perfect for business professionals, customer service, sales teams
+• Ideal for non-native English speakers
+• No learning curve - intuitive interface
+
+🔒 PRIVACY & SECURITY:
+• Local data processing
+• HTTPS encrypted communications
+• Minimal browser permissions
+• Manifest V3 compliant
+
+🌟 PERFECT FOR:
+Business professionals, customer service teams, sales representatives, busy executives, and anyone wanting to improve email efficiency.
+
+Transform your Gmail experience today! Join thousands of users who have revolutionized their email workflow with AI-powered assistance.
+
+Experience the future of email communication - Your intelligent assistant is just one click away! 
