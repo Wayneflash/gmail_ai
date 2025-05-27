@@ -1,5 +1,72 @@
 # Gmail AI - 配置修改指引
 
+## 🔧 重要修复：AI回复角色混淆问题 (v2.6.3)
+
+### ✅ 修复AI生成错误回复的问题！
+从v2.6.3版本开始，修复了AI回复中角色混淆的重要问题：
+
+#### 🎯 修复的问题
+- **角色混淆**：AI之前会把用户当成收件人，生成错误的回复
+- **内容错误**：AI生成的内容更像邮件总结而不是实际回复
+- **收件人错误**：回复中会错误地称呼用户而不是原邮件发件人
+
+#### 🔧 解决方案
+- **优化提示词**：明确告诉AI这是要生成邮件回复，不是总结
+- **角色明确**：清楚区分"我收到邮件"和"我要回复给发件人"
+- **上下文分离**：明确标记原邮件内容和用户回复草稿
+
+#### 📝 技术改进
+- **英文提示词优化** (background.js 第72行)
+  ```
+  "You are helping me write a professional email reply. I received an email and need to respond to the sender. Please optimize my draft reply to make it more professional and appropriate. Keep the same meaning but improve the tone, grammar, and structure. Make sure the reply is addressed TO THE SENDER (not to me)."
+  ```
+
+- **中文提示词优化** (background.js 第142行)
+  ```
+  "你正在帮助我撰写专业的邮件回复。我收到了一封邮件，需要回复给发件人。请优化我的回复草稿，使其更加专业和得体。保持原意不变，但改进语气、语法和结构。确保回复是写给发件人的（不是写给我的）。"
+  ```
+
+- **上下文结构优化** (background.js 第1095-1110行)
+  ```
+  ORIGINAL EMAIL I RECEIVED:
+  [原邮件内容]
+  
+  ---
+  
+  MY DRAFT REPLY (please optimize this):
+  [用户回复草稿]
+  
+  Please optimize my draft reply above to respond professionally to the original email.
+  ```
+
+#### 🎯 现在的正确行为
+- **正确识别角色**：AI知道用户是回复者，原邮件发件人是收件人
+- **生成真实回复**：AI会生成实际的邮件回复内容，不是总结
+- **正确称呼**：回复中会正确称呼原邮件的发件人
+
+#### 🔍 使用效果对比
+**修复前（错误）**：
+```
+尊敬的Wayne先生：
+感谢您的简短回复。我们理解您的时间宝贵...
+```
+
+**修复后（正确）**：
+```
+尊敬的Michael先生：
+感谢您的邮件。我们理解您的时间宝贵，但仍希望能获得您宝贵的反馈意见...
+```
+
+#### 🔧 如果仍有问题
+如果AI回复仍然有角色混淆：
+
+1. **检查邮件内容提取**：确保提取到的是完整的原邮件
+2. **重新加载扩展**：在Chrome扩展管理页面重新加载
+3. **清除缓存**：清除浏览器缓存后重试
+4. **查看控制台**：检查是否有"邮件内容长度"和"邮件内容预览"的日志
+
+---
+
 ## 🌐 最新功能：浏览器语言自动检测 (v2.6.2)
 
 ### ✅ 智能语言检测功能！
