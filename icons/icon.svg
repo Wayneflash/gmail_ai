@@ -1,24 +1,54 @@
-<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景圆形渐变 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景渐变 -->
   <defs>
     <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1a73e8;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#4285f4;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="emailGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.95" />
+      <stop offset="100%" style="stop-color:#f8f9ff;stop-opacity:0.9" />
+    </linearGradient>
+    <linearGradient id="aiGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4285f4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a73e8;stop-opacity:1" />
     </linearGradient>
   </defs>
   
-  <!-- 背景圆形 -->
-  <circle cx="64" cy="64" r="60" fill="url(#bgGradient)" stroke="none"/>
+  <!-- 圆角背景 -->
+  <rect width="128" height="128" rx="24" ry="24" fill="url(#bgGradient)"/>
   
-  <!-- 邮件外框 -->
-  <rect x="32" y="48" width="64" height="32" fill="none" stroke="white" stroke-width="3" rx="2"/>
+  <!-- 邮件信封主体 -->
+  <rect x="20" y="35" width="88" height="58" rx="8" ry="8" fill="url(#emailGradient)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
   
-  <!-- 邮件顶部折线 -->
-  <path d="M32 48 L64 68 L96 48" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 邮件信封顶部折叠线 -->
+  <path d="M20 43 L64 67 L108 43" stroke="rgba(102,126,234,0.6)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   
-  <!-- AI标识圆点 -->
-  <circle cx="88" cy="56" r="6" fill="#34a853"/>
+  <!-- AI大脑/神经网络图案 -->
+  <g transform="translate(75, 25)">
+    <!-- AI核心圆点 -->
+    <circle cx="0" cy="0" r="3" fill="url(#aiGradient)"/>
+    <circle cx="12" cy="-8" r="2.5" fill="url(#aiGradient)" opacity="0.8"/>
+    <circle cx="-10" cy="6" r="2.5" fill="url(#aiGradient)" opacity="0.8"/>
+    <circle cx="8" cy="10" r="2" fill="url(#aiGradient)" opacity="0.6"/>
+    <circle cx="-8" cy="-6" r="2" fill="url(#aiGradient)" opacity="0.6"/>
+    
+    <!-- 连接线 -->
+    <path d="M0 0 L12 -8 M0 0 L-10 6 M0 0 L8 10 M0 0 L-8 -6" stroke="url(#aiGradient)" stroke-width="1.5" opacity="0.7" stroke-linecap="round"/>
+    <path d="M12 -8 L8 10 M-10 6 L-8 -6" stroke="url(#aiGradient)" stroke-width="1" opacity="0.5" stroke-linecap="round"/>
+  </g>
   
-  <!-- AI文字 -->
-  <text x="64" y="100" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">AI</text>
+  <!-- AI智能标识 -->
+  <g transform="translate(32, 75)">
+    <!-- 智能波纹 -->
+    <path d="M0 0 Q8 -4 16 0 Q24 4 32 0" stroke="url(#aiGradient)" stroke-width="2" fill="none" opacity="0.7" stroke-linecap="round"/>
+    <path d="M4 6 Q12 2 20 6 Q28 10 36 6" stroke="url(#aiGradient)" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/>
+  </g>
+  
+  <!-- 装饰性光点 -->
+  <circle cx="25" cy="25" r="1.5" fill="rgba(255,255,255,0.6)"/>
+  <circle cx="103" cy="103" r="1.5" fill="rgba(255,255,255,0.6)"/>
+  <circle cx="103" cy="25" r="1" fill="rgba(255,255,255,0.4)"/>
+  <circle cx="25" cy="103" r="1" fill="rgba(255,255,255,0.4)"/>
 </svg> 

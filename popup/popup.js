@@ -1,192 +1,228 @@
-// Gmail AI回复助手 - 弹出窗口脚本
-let elements = {};
+/**
+ * Gmail AI回复助手 - Popup脚本
+ * 新版AI助手风格界面
+ */
 
+// 全局变量
+let currentLanguage = 'en';
+let currentConfig = null;
+
+// 多语言配置
+const POPUP_LANGUAGE_CONFIG = {
+    en: {
+        title: "AI Assistant",
+        statusChecking: "Checking status...",
+        statusReady: "Ready to use",
+        statusError: "Configuration needed",
+        openGmail: "Open Gmail",
+        advancedSettings: "Advanced Settings",
+        smartSummary: "Smart Email Summary",
+        smartSummaryDesc: "Automatically analyze email content and extract key information",
+        aiReplyOptimization: "AI Reply Optimization", 
+        aiReplyOptimizationDesc: "Input your reply ideas, AI helps optimize expression",
+        multiLanguageSupport: "Multi-language Support",
+        multiLanguageSupportDesc: "Support Chinese-English switching, intelligent language recognition",
+        usageGuide: "How to Use",
+        step1: "Open Gmail email page",
+        step2: "Click 'Gmail AI' button below reply box",
+        step3: "View email summary, input reply ideas",
+        step4: "AI optimizes and inserts into email with one click",
+        totalReplies: "Total Replies",
+        todayUsage: "Today's Usage",
+        languageSwitch: "🌐 中文"
+    },
+    zh: {
+        title: "AI回复助手",
+        statusChecking: "检查状态中...",
+        statusReady: "准备就绪",
+        statusError: "需要配置",
+        openGmail: "打开Gmail",
+        advancedSettings: "高级设置",
+        smartSummary: "智能邮件总结",
+        smartSummaryDesc: "自动分析邮件内容，提取关键信息",
+        aiReplyOptimization: "AI回复优化",
+        aiReplyOptimizationDesc: "输入回复想法，AI帮您优化表达",
+        multiLanguageSupport: "多语言支持",
+        multiLanguageSupportDesc: "支持中英文切换，智能语言识别",
+        usageGuide: "使用方法",
+        step1: "打开Gmail邮件页面",
+        step2: "点击回复框下方的'Gmail AI'按钮",
+        step3: "查看邮件总结，输入回复想法",
+        step4: "AI优化后一键插入到邮件中",
+        totalReplies: "总回复数",
+        todayUsage: "今日使用",
+        languageSwitch: "🌐 English"
+    }
+};
+
+/**
+ * 页面加载完成后初始化
+ */
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('弹出窗口正在初始化...');
+    console.log('Popup页面初始化...');
     
-    initializeElements();
-    bindEventListeners();
-    await checkConfigurationStatus();
-    await checkApiStatus();
-    await checkPageStatus();
-    await loadUsageStats();
-    await loadUserSettings();
-    
-    console.log('弹出窗口初始化完成');
+    try {
+        // 获取当前语言配置
+        await getCurrentLanguageConfig();
+        
+        // 更新界面语言
+        updateUILanguage();
+        
+        // 检查扩展状态
+        await checkExtensionStatus();
+        
+        // 加载使用统计
+        await loadUsageStats();
+        
+        // 绑定事件监听器
+        bindEventListeners();
+        
+        console.log('Popup页面初始化完成');
+        
+    } catch (error) {
+        console.error('Popup初始化失败:', error);
+        showErrorStatus('初始化失败');
+    }
 });
 
-function initializeElements() {
-    elements = {
-        configStatus: document.getElementById('configStatus'),
-        apiStatus: document.getElementById('apiStatus'),
-        pageStatus: document.getElementById('pageStatus'),
-        openGmail: document.getElementById('openGmail'),
-        openSettings: document.getElementById('openSettings'),
-        totalReplies: document.getElementById('totalReplies'),
-        todayReplies: document.getElementById('todayReplies'),
-        defaultStyle: document.getElementById('defaultStyle'),
-        helpLink: document.getElementById('helpLink'),
-        feedbackLink: document.getElementById('feedbackLink'),
-        configMessage: document.getElementById('configMessage')
-    };
-}
-
-function bindEventListeners() {
-    elements.openGmail.addEventListener('click', () => {
-        chrome.tabs.create({ url: 'https://mail.google.com' });
-        window.close();
-    });
-    
-    elements.openSettings.addEventListener('click', () => {
-        chrome.tabs.create({ url: chrome.runtime.getURL('options/options.html') });
-        window.close();
-    });
-    
-    elements.defaultStyle.addEventListener('change', async (e) => {
-        await saveDefaultStyle(e.target.value);
-    });
+/**
+ * 获取当前语言配置
+ */
+async function getCurrentLanguageConfig() {
+    try {
+        const response = await chrome.runtime.sendMessage({
+            action: 'getLanguageConfig'
+        });
+        
+        if (response && response.success) {
+            currentLanguage = response.data.lang;
+            console.log('当前语言:', currentLanguage);
+        } else {
+            console.log('使用默认语言: en');
+            currentLanguage = 'en';
+        }
+    } catch (error) {
+        console.error('获取语言配置失败:', error);
+        currentLanguage = 'en';
+    }
 }
 
 /**
- * 检查配置状态 - 新增功能
- * 显示自动配置完成的友好信息
+ * 更新界面语言
  */
-async function checkConfigurationStatus() {
-    try {
-        const response = await chrome.runtime.sendMessage({ action: 'getConfig' });
+function updateUILanguage() {
+    const config = POPUP_LANGUAGE_CONFIG[currentLanguage];
+    
+    // 更新标题
+    const title = document.querySelector('.popup-title');
+    if (title) title.textContent = config.title;
+    
+    // 更新语言切换按钮
+    const languageToggle = document.querySelector('.language-text');
+    if (languageToggle) languageToggle.textContent = config.languageSwitch;
+    
+    // 更新按钮文本
+    const openGmailBtn = document.querySelector('#openGmail span');
+    if (openGmailBtn) openGmailBtn.textContent = config.openGmail;
+    
+    const settingsBtn = document.querySelector('#openSettings span');
+    if (settingsBtn) settingsBtn.textContent = config.advancedSettings;
+    
+    // 更新功能介绍
+    const introItems = document.querySelectorAll('.intro-content');
+    if (introItems.length >= 3) {
+        introItems[0].querySelector('h3').textContent = config.smartSummary;
+        introItems[0].querySelector('p').textContent = config.smartSummaryDesc;
         
-        if (response.success) {
-            const config = response.data;
-            
-            if (config.isConfigured && config.apiKey) {
-                // 已自动配置完成
-                if (elements.configStatus) {
-                    const indicator = elements.configStatus.querySelector('.status-indicator');
-                    const text = elements.configStatus.querySelector('.status-text');
-                    indicator.className = 'status-indicator';
-                    text.textContent = '已自动配置';
-                }
-                
-                if (elements.configMessage) {
-                    elements.configMessage.innerHTML = `
-                        <div class="config-success">
-                            <span class="success-icon">✅</span>
-                            <div class="success-text">
-                                <strong>配置完成！</strong><br>
-                                已自动配置DeepSeek-V3模型，可直接在Gmail中使用AI回复功能。
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                // 修改设置按钮文字
-                if (elements.openSettings) {
-                    elements.openSettings.textContent = '高级设置';
-                    elements.openSettings.title = '打开高级设置页面（可选）';
-                }
-                
-            } else {
-                // 未配置，显示需要设置的信息
-                if (elements.configStatus) {
-                    const indicator = elements.configStatus.querySelector('.status-indicator');
-                    const text = elements.configStatus.querySelector('.status-text');
-                    indicator.className = 'status-indicator error';
-                    text.textContent = '需要配置';
-                }
-                
-                if (elements.configMessage) {
-                    elements.configMessage.innerHTML = `
-                        <div class="config-needed">
-                            <span class="warning-icon">⚠️</span>
-                            <div class="warning-text">
-                                <strong>需要配置</strong><br>
-                                请点击下方"打开设置"按钮配置API密钥。
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-        }
+        introItems[1].querySelector('h3').textContent = config.aiReplyOptimization;
+        introItems[1].querySelector('p').textContent = config.aiReplyOptimizationDesc;
         
-    } catch (error) {
-        console.error('检查配置状态失败:', error);
-        if (elements.configStatus) {
-            const indicator = elements.configStatus.querySelector('.status-indicator');
-            const text = elements.configStatus.querySelector('.status-text');
-            indicator.className = 'status-indicator error';
-            text.textContent = '检查失败';
-        }
+        introItems[2].querySelector('h3').textContent = config.multiLanguageSupport;
+        introItems[2].querySelector('p').textContent = config.multiLanguageSupportDesc;
+    }
+    
+    // 更新使用指南
+    const guideTitle = document.querySelector('.guide-title');
+    if (guideTitle) guideTitle.textContent = config.usageGuide;
+    
+    const stepTexts = document.querySelectorAll('.step-text');
+    if (stepTexts.length >= 4) {
+        stepTexts[0].textContent = config.step1;
+        stepTexts[1].textContent = config.step2;
+        stepTexts[2].textContent = config.step3;
+        stepTexts[3].textContent = config.step4;
+    }
+    
+    // 更新统计标签
+    const statLabels = document.querySelectorAll('.stat-label');
+    if (statLabels.length >= 2) {
+        statLabels[0].textContent = config.totalReplies;
+        statLabels[1].textContent = config.todayUsage;
     }
 }
 
-async function checkApiStatus() {
+/**
+ * 检查扩展状态
+ */
+async function checkExtensionStatus() {
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const config = POPUP_LANGUAGE_CONFIG[currentLanguage];
+    
     try {
-        const indicator = elements.apiStatus.querySelector('.status-indicator');
-        const text = elements.apiStatus.querySelector('.status-text');
+        // 设置检查状态
+        statusDot.className = 'status-dot checking';
+        statusText.textContent = config.statusChecking;
         
-        const response = await chrome.runtime.sendMessage({ action: 'getConfig' });
-        
-        if (!response.success) {
-            throw new Error(response.error);
-        }
-        
-        const config = response.data;
-        
-        if (!config.apiKey) {
-            indicator.className = 'status-indicator error';
-            text.textContent = '未配置';
-            return;
-        }
-        
-        // 显示当前使用的模型
-        text.textContent = `${config.model || 'DeepSeek-V3'} - 检测中...`;
-        
-        const testResponse = await chrome.runtime.sendMessage({
-            action: 'testConnection',
-            data: { apiKey: config.apiKey }
+        // 检查配置状态
+        const configResponse = await chrome.runtime.sendMessage({
+            action: 'getLanguageConfig'
         });
         
-        if (testResponse.success && testResponse.data.connected) {
-            indicator.className = 'status-indicator';
-            text.textContent = `${config.model || 'DeepSeek-V3'} - 正常`;
+        if (configResponse && configResponse.success) {
+            // 配置正常
+            statusDot.className = 'status-dot';
+            statusText.textContent = config.statusReady;
+            
+            // 更新模型信息
+            updateModelInfo();
+            
         } else {
-            indicator.className = 'status-indicator error';
-            text.textContent = `${config.model || 'DeepSeek-V3'} - 连接失败`;
+            throw new Error('配置检查失败');
         }
         
     } catch (error) {
-        console.error('检查API状态失败:', error);
-        const indicator = elements.apiStatus.querySelector('.status-indicator');
-        const text = elements.apiStatus.querySelector('.status-text');
-        indicator.className = 'status-indicator error';
-        text.textContent = '检查失败';
+        console.error('状态检查失败:', error);
+        statusDot.className = 'status-dot error';
+        statusText.textContent = config.statusError;
     }
 }
 
-async function checkPageStatus() {
+/**
+ * 更新模型信息
+ */
+async function updateModelInfo() {
     try {
-        const indicator = elements.pageStatus.querySelector('.status-indicator');
-        const text = elements.pageStatus.querySelector('.status-text');
+        const response = await chrome.storage.sync.get(['config']);
+        const config = response.config || {};
+        const modelInfo = document.getElementById('modelInfo');
         
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        
-        if (tab && tab.url && tab.url.includes('mail.google.com')) {
-            indicator.className = 'status-indicator';
-            text.textContent = 'Gmail页面';
-        } else {
-            indicator.className = 'status-indicator offline';
-            text.textContent = '非Gmail页面';
+        if (modelInfo) {
+            const modelName = config.model || 'DeepSeek-V3';
+            // 简化模型名称显示
+            const displayName = modelName.includes('DeepSeek-V3') ? 'DeepSeek-V3' : 
+                               modelName.includes('DeepSeek') ? 'DeepSeek' :
+                               modelName.split('/').pop() || 'AI Model';
+            modelInfo.textContent = displayName;
         }
-        
     } catch (error) {
-        console.error('检查页面状态失败:', error);
-        const indicator = elements.pageStatus.querySelector('.status-indicator');
-        const text = elements.pageStatus.querySelector('.status-text');
-        indicator.className = 'status-indicator error';
-        text.textContent = '检查失败';
+        console.error('更新模型信息失败:', error);
     }
 }
 
+/**
+ * 加载使用统计
+ */
 async function loadUsageStats() {
     try {
         const result = await chrome.storage.local.get(['usageStats']);
@@ -196,6 +232,7 @@ async function loadUsageStats() {
             lastResetDate: new Date().toDateString()
         };
         
+        // 检查是否需要重置今日统计
         const today = new Date().toDateString();
         if (stats.lastResetDate !== today) {
             stats.todayReplies = 0;
@@ -203,54 +240,196 @@ async function loadUsageStats() {
             await chrome.storage.local.set({ usageStats: stats });
         }
         
-        elements.totalReplies.textContent = stats.totalReplies.toLocaleString();
-        elements.todayReplies.textContent = stats.todayReplies.toLocaleString();
+        // 更新显示
+        const totalRepliesElement = document.getElementById('totalReplies');
+        const todayRepliesElement = document.getElementById('todayReplies');
+        
+        if (totalRepliesElement) {
+            totalRepliesElement.textContent = stats.totalReplies.toString();
+        }
+        
+        if (todayRepliesElement) {
+            todayRepliesElement.textContent = stats.todayReplies.toString();
+        }
         
     } catch (error) {
         console.error('加载使用统计失败:', error);
-        elements.totalReplies.textContent = '0';
-        elements.todayReplies.textContent = '0';
     }
 }
 
-async function loadUserSettings() {
-    try {
-        const response = await chrome.runtime.sendMessage({ action: 'getConfig' });
-        
-        if (response.success) {
-            const config = response.data;
-            
-            if (config.defaultStyle) {
-                elements.defaultStyle.value = config.defaultStyle;
-            }
-        }
-        
-    } catch (error) {
-        console.error('加载用户设置失败:', error);
+/**
+ * 绑定事件监听器
+ */
+function bindEventListeners() {
+    // 语言切换按钮
+    const languageToggle = document.getElementById('languageToggle');
+    if (languageToggle) {
+        languageToggle.addEventListener('click', handleLanguageSwitch);
+    }
+    
+    // 打开Gmail按钮
+    const openGmailBtn = document.getElementById('openGmail');
+    if (openGmailBtn) {
+        openGmailBtn.addEventListener('click', handleOpenGmail);
+    }
+    
+    // 高级设置按钮
+    const openSettingsBtn = document.getElementById('openSettings');
+    if (openSettingsBtn) {
+        openSettingsBtn.addEventListener('click', handleOpenSettings);
     }
 }
 
-async function saveDefaultStyle(style) {
+/**
+ * 处理语言切换
+ */
+async function handleLanguageSwitch() {
     try {
-        const response = await chrome.runtime.sendMessage({ action: 'getConfig' });
+        console.log('切换语言...');
         
-        if (response.success) {
-            const config = response.data;
-            config.defaultStyle = style;
+        const response = await chrome.runtime.sendMessage({
+            action: 'switchLanguage'
+        });
+        
+        if (response && response.success) {
+            currentLanguage = response.data.newLanguage;
+            console.log('语言已切换到:', currentLanguage);
             
-            const saveResponse = await chrome.runtime.sendMessage({
-                action: 'saveConfig',
-                data: config
-            });
+            // 更新界面
+            updateUILanguage();
             
-            if (saveResponse.success) {
-                console.log('默认回复风格已保存');
-            } else {
-                throw new Error(saveResponse.error);
-            }
+            // 显示切换成功提示
+            showSuccessMessage(currentLanguage === 'zh' ? '语言已切换为中文' : 'Language switched to English');
+            
+        } else {
+            throw new Error(response?.error || '语言切换失败');
         }
         
     } catch (error) {
-        console.error('保存默认风格失败:', error);
+        console.error('语言切换失败:', error);
+        showErrorMessage('Language switch failed');
     }
-} 
+}
+
+/**
+ * 处理打开Gmail
+ */
+async function handleOpenGmail() {
+    try {
+        await chrome.tabs.create({
+            url: 'https://mail.google.com',
+            active: true
+        });
+        
+        // 关闭popup
+        window.close();
+        
+    } catch (error) {
+        console.error('打开Gmail失败:', error);
+        showErrorMessage('Failed to open Gmail');
+    }
+}
+
+/**
+ * 处理打开设置
+ */
+async function handleOpenSettings() {
+    try {
+        await chrome.runtime.openOptionsPage();
+        
+        // 关闭popup
+        window.close();
+        
+    } catch (error) {
+        console.error('打开设置失败:', error);
+        showErrorMessage('Failed to open settings');
+    }
+}
+
+/**
+ * 显示错误状态
+ */
+function showErrorStatus(message) {
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    
+    if (statusDot) statusDot.className = 'status-dot error';
+    if (statusText) statusText.textContent = message;
+}
+
+/**
+ * 显示成功消息
+ */
+function showSuccessMessage(message) {
+    // 创建临时提示
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #4caf50;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 12px;
+        z-index: 10000;
+        animation: fadeInOut 2s ease-in-out;
+    `;
+    toast.textContent = message;
+    
+    // 添加动画样式
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+            20%, 80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(toast);
+    
+    // 2秒后移除
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+        }
+        if (style.parentNode) {
+            style.parentNode.removeChild(style);
+        }
+    }, 2000);
+}
+
+/**
+ * 显示错误消息
+ */
+function showErrorMessage(message) {
+    // 创建临时提示
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #f44336;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 12px;
+        z-index: 10000;
+        animation: fadeInOut 2s ease-in-out;
+    `;
+    toast.textContent = message;
+    
+    document.body.appendChild(toast);
+    
+    // 2秒后移除
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+        }
+    }, 2000);
+}
+
+console.log('Popup脚本已加载 - AI助手风格版本'); 

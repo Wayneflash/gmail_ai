@@ -1,4 +1,517 @@
-# Gmail AI回复助手 - 配置修改指引
+# Gmail AI - 配置修改指引
+
+## 🎨 最新优化：语气风格选择器UI美化 (v2.6.1)
+
+### ✅ 全新的美观语气选择器！
+从v2.6.1版本开始，语气风格选择器进行了全面的UI优化：
+
+#### 🎨 视觉设计升级
+- **渐变背景**：选择器区域采用紫色渐变背景，与Gmail AI品牌色保持一致
+- **悬停效果**：鼠标悬停时有微妙的上升动画和阴影效果
+- **自定义下拉箭头**：使用SVG图标替代系统默认箭头，更美观
+- **圆角设计**：12px圆角，符合现代UI设计趋势
+- **阴影效果**：多层阴影营造立体感
+
+#### 🌐 完整多语言支持
+- **中英文界面**：语气选择器完全支持中英文切换
+- **动态提示文本**：每种语气都有对应的描述提示
+- **实时更新**：切换语言时所有文本立即更新
+
+#### 📝 语气选项说明
+**英文版本**：
+- **Natural** - Natural and appropriate tone
+- **Professional** - Formal business communication  
+- **Friendly** - Warm and approachable style
+- **Concise** - Brief and direct response
+- **Creative** - Engaging and thoughtful tone
+- **Polite** - Extra courteous and respectful
+
+**中文版本**：
+- **自然** - 自然和适当的语气
+- **专业** - 正式的商业沟通
+- **友好** - 温暖和可接近的风格
+- **简洁** - 简洁和直接的回应
+- **创意** - 引人入胜和深思熟虑的语气
+- **礼貌** - 额外礼貌和尊重
+
+#### 🎯 交互体验优化
+- **动态提示**：选择不同语气时，下方提示文本实时更新
+- **选择动画**：选择语气时有短暂的加载动画效果
+- **焦点状态**：聚焦时有蓝色边框和阴影效果
+- **垂直布局**：标签和选择器分行显示，更清晰
+
+#### 🔧 技术实现
+- **CSS样式优化**：content.js 第950-1050行全新的样式设计
+- **事件处理**：content.js 第1420-1450行动态提示文本更新
+- **语言配置**：background.js 第60-80行和第130-150行完整的多语言支持
+- **布局改进**：采用垂直布局，标签在上，选择器在下
+
+#### 🎨 自定义样式
+如果您想修改语气选择器的外观：
+
+1. **修改背景渐变** (content.js 第960行)
+   ```css
+   background: linear-gradient(135deg, 您的颜色1 0%, 您的颜色2 100%) !important;
+   ```
+
+2. **调整圆角大小** (content.js 第965行)
+   ```css
+   border-radius: 您的数值px !important;
+   ```
+
+3. **修改悬停效果** (content.js 第970-975行)
+   ```css
+   transform: translateY(-您的数值px) !important;
+   box-shadow: 0 4px 12px rgba(102, 126, 234, 您的透明度) !important;
+   ```
+
+4. **自定义下拉箭头** (content.js 第990-995行)
+   - 替换SVG图标的stroke颜色
+   - 调整箭头大小和位置
+
+#### 🎯 使用体验
+- **直观选择**：每种语气都有清晰的名称和描述
+- **即时反馈**：选择后立即显示对应的提示文本
+- **视觉一致性**：与Gmail AI整体设计风格保持一致
+- **响应式设计**：在不同屏幕尺寸下都有良好表现
+
+### 🔍 故障排除
+如果语气选择器显示异常：
+
+1. **检查语言配置**：确认background.js中的语言配置完整
+2. **清除缓存**：清除浏览器缓存后重新加载
+3. **重新加载扩展**：在Chrome扩展管理页面重新加载扩展
+4. **查看控制台**：检查是否有JavaScript错误
+
+---
+
+## 🎭 最新功能：Monica风格语气选择器 (v2.6.0)
+
+### ✅ 全新的语气风格选择功能！
+从v2.6.0版本开始，Gmail AI新增了类似Monica的语气风格选择功能：
+
+#### 🎨 语气风格选项
+- **Default** - 自然适当的语气
+- **Professional** - 专业正式的商务语气
+- **Friendly** - 温暖友好的亲切语气
+- **Concise** - 简洁直接的语气
+- **Creative** - 创意有趣的语气
+- **Polite** - 额外礼貌恭敬的语气
+
+#### 🔧 使用方法
+1. **打开AI面板**：点击Gmail中的"Gmail AI"按钮
+2. **选择语气风格**：在"🎭 Tone Style"下拉菜单中选择想要的语气
+3. **输入回复想法**：在文本框中输入您的回复想法
+4. **AI优化生成**：点击"✨ AI Optimize Reply"按钮
+5. **应用回复**：AI会根据选择的语气风格优化您的回复
+
+#### 🎯 技术实现
+- **前端选择器**：content.js 第730-740行添加语气风格下拉菜单
+- **样式设计**：content.js 第950-990行语气选择器的CSS样式
+- **参数传递**：content.js 第1530行将选择的语气传递给AI
+- **后端处理**：background.js 第1010行处理语气风格参数
+- **多语言支持**：background.js 第45-75行和第115-145行语气配置
+
+#### 🎨 界面优化
+- **图标移除**：移除了所有AI按钮和面板标题中的图标，界面更简洁
+- **Monica风格**：参考Monica AI的设计，提供直观的语气选择体验
+- **默认选择**：如果用户不选择语气，默认使用"Default"自然语气
+- **语言切换**：语气选择器支持中英文界面切换
+
+#### 🔧 自定义语气风格
+如果您想添加或修改语气风格：
+
+1. **修改语气配置** (background.js 第60-85行)
+   ```javascript
+   toneStyles: {
+       yourCustomTone: {
+           name: "Your Custom Tone",
+           prompt: "Reply in your custom tone description"
+       }
+   }
+   ```
+
+2. **添加界面文本** (background.js 第50行)
+   ```javascript
+   ui: {
+       toneYourCustom: "Your Custom Tone"
+   }
+   ```
+
+3. **更新选择器选项** (content.js 第740行)
+   ```html
+   <option value="yourCustomTone">${ui.toneYourCustom}</option>
+   ```
+
+#### 🎯 使用建议
+- **商务邮件**：选择"Professional"获得正式的商务语气
+- **朋友交流**：选择"Friendly"获得亲切的交流语气
+- **快速回复**：选择"Concise"获得简洁直接的回复
+- **创意表达**：选择"Creative"获得有趣的表达方式
+- **重要场合**：选择"Polite"获得额外礼貌的语气
+
+### 🔍 故障排除
+如果语气选择功能不工作：
+
+1. **检查选择器显示**：确认AI面板中有"🎭 Tone Style"选择器
+2. **查看控制台日志**：检查是否有"选择的语气风格: xxx"的日志
+3. **重新加载扩展**：在Chrome扩展管理页面重新加载扩展
+4. **清除缓存**：清除浏览器缓存后重试
+
+---
+
+## 🔧 最新修复：语言切换和AI总结问题 (v2.5.1)
+
+### ✅ 修复的问题
+从v2.5.1版本开始，以下问题已完全修复：
+
+#### 🌐 语言切换失败问题
+- **问题描述**: 点击语言切换按钮时报错，导致面板无法正常切换语言
+- **修复位置**: content.js 第1350-1375行
+- **解决方案**: 
+  - 🔄 **增强错误处理**: 添加完整的try-catch错误处理机制
+  - 🎯 **状态指示**: 切换时显示"🔄 切换中..."状态
+  - ⚡ **按钮保护**: 切换期间禁用按钮，防止重复点击
+  - 🔧 **状态恢复**: 失败时自动恢复按钮原始状态
+  - 📢 **错误通知**: 失败时显示详细错误信息
+
+#### 🤖 AI总结功能问题
+- **问题描述**: AI不再自动总结邮件内容
+- **根本原因**: 语言配置加载失败导致总结功能异常
+- **修复位置**: content.js 第18-46行和第1467-1495行
+- **解决方案**:
+  - 🛡️ **备用配置**: 当语言配置加载失败时自动使用默认英文配置
+  - 🔄 **重试机制**: 增强safeRuntimeMessage函数的错误处理
+  - 📊 **状态检查**: 改进扩展context有效性检查
+  - 🎯 **错误分类**: 区分不同类型的错误并采用相应处理策略
+
+#### 📝 按钮文本完全统一
+- **问题描述**: 部分地方仍显示"AI Reply"而非"Gmail AI"
+- **修复位置**: 
+  - content.js 第93行：默认英文配置
+  - content.js 第699行：备用文本
+  - popup/popup.js 第26行和第38行：使用指南文本
+- **解决方案**: 所有界面元素现在都统一显示"Gmail AI"
+
+### 🔧 技术改进详情
+
+1. **语言切换优化** (content.js 第1350-1375行)
+   ```javascript
+   // 新增状态管理和错误恢复
+   languageSwitchBtn.addEventListener('click', async () => {
+       try {
+           // 显示切换状态
+           languageSwitchBtn.textContent = '🔄 切换中...';
+           languageSwitchBtn.disabled = true;
+           
+           // 执行切换
+           const result = await switchLanguage();
+           
+           // 重建面板
+           setTimeout(() => showAIPanel(inputBox), 300);
+           
+       } catch (error) {
+           // 错误恢复
+           languageSwitchBtn.textContent = originalText;
+           languageSwitchBtn.disabled = false;
+           showNotification('Language switch failed: ' + error.message, 'error');
+       }
+   });
+   ```
+
+2. **配置加载增强** (content.js 第18-46行)
+   ```javascript
+   // 增强的错误处理和备用配置
+   async function getCurrentLanguageConfig() {
+       try {
+           const response = await safeRuntimeMessage({
+               action: 'getLanguageConfig'
+           });
+           
+           if (response.success) {
+               // 正常加载配置
+               currentLanguage = response.data.lang;
+               currentLanguageConfig = response.data.config;
+               return response.data;
+           } else {
+               // 使用备用配置
+               currentLanguage = 'en';
+               currentLanguageConfig = getDefaultEnglishConfig();
+               return { lang: 'en', config: currentLanguageConfig };
+           }
+       } catch (error) {
+           // 异常时使用备用配置
+           currentLanguage = 'en';
+           currentLanguageConfig = getDefaultEnglishConfig();
+           return { lang: 'en', config: currentLanguageConfig };
+       }
+   }
+   ```
+
+3. **AI总结功能保障** (content.js 第1467-1495行)
+   ```javascript
+   // 增强的总结功能错误处理
+   async function autoSummarizeEmail() {
+       try {
+           const emailContent = extractEmailContent();
+           
+           if (!emailContent) {
+               const ui = currentLanguageConfig ? 
+                   currentLanguageConfig.ui : 
+                   getDefaultEnglishConfig().ui;
+               summaryContent.innerHTML = ui.noEmailContent;
+               return;
+           }
+           
+           // 执行AI总结
+           await generateEmailSummaryStream(emailContent, summaryContent);
+           
+       } catch (error) {
+           // 详细错误处理
+           if (error.message.includes('Extension context invalidated')) {
+               summaryContent.innerHTML = ui.extensionUpdated;
+               showExtensionUpdateNotice();
+           } else {
+               summaryContent.innerHTML = `${ui.summaryFailed}: ${error.message}`;
+           }
+       }
+   }
+   ```
+
+### 🎯 使用建议
+
+1. **重新加载扩展**: 修复后请在Chrome扩展管理页面重新加载扩展
+2. **清除缓存**: 如果问题持续，请清除浏览器缓存后重试
+3. **检查控制台**: 如遇问题，请查看浏览器控制台的详细日志
+4. **测试功能**: 建议依次测试语言切换、AI总结、回复优化功能
+
+### 🔍 故障排除
+
+如果修复后仍有问题：
+
+1. **语言切换失败**
+   - 检查控制台是否有"Extension context invalidated"错误
+   - 尝试刷新Gmail页面
+   - 重新加载扩展
+
+2. **AI总结不工作**
+   - 确认在邮件详情页面使用
+   - 检查网络连接
+   - 查看控制台错误信息
+
+3. **按钮文本错误**
+   - 强制刷新页面 (Ctrl+F5)
+   - 清除浏览器缓存
+   - 重新安装扩展
+
+---
+
+## 🎉 最新更新：AI Reply按钮完全统一 (v2.5.0)
+
+### ✅ AI Reply按钮品牌统一升级！
+从v2.5.0版本开始，AI Reply按钮已完全统一为Gmail AI品牌：
+
+#### 📝 按钮文本更新
+- **英文版本**：从"AI Reply"改为"Gmail AI"
+- **中文版本**：从"AI回复"改为"Gmail AI"
+- **统一品牌**：所有界面元素都使用"Gmail AI"品牌名称
+
+#### 🎨 图标完全统一
+- **AI Reply按钮图标**：现在使用与扩展图标完全相同的设计
+- **AI面板标题图标**：与扩展图标保持一致
+- **语言切换更新**：切换语言时图标也会正确更新
+- **所有图标元素**：
+  - 📧 邮件信封主体（白色半透明渐变）
+  - 🧠 AI神经网络节点（蓝色渐变）
+  - ⚡ 智能波纹效果
+  - ✨ 装饰性光点
+  - 🎨 紫色渐变背景色调
+
+#### 🔧 技术实现
+- **按钮文本配置**：background.js 第58行和第95行
+- **AI按钮图标**：content.js 第620-670行
+- **面板标题图标**：content.js 第786-840行
+- **语言切换更新**：content.js 第250-300行
+
+#### 🎯 统一性检查
+现在所有Gmail AI相关的图标都完全一致：
+1. ✅ Chrome扩展图标
+2. ✅ AI Reply按钮图标
+3. ✅ AI面板标题图标
+4. ✅ 语言切换时的图标更新
+
+### 🔧 自定义图标设置
+如果您想修改统一的图标设计：
+
+1. **修改扩展图标** (icons/icon.svg)
+   - 编辑SVG源文件
+   - 运行 `python generate_icons.py` 生成PNG
+
+2. **同步按钮图标** (content.js)
+   - 第620-670行：AI Reply按钮图标
+   - 第786-840行：AI面板标题图标
+   - 第250-300行：语言切换更新图标
+
+3. **保持一致性**
+   - 确保所有图标使用相同的viewBox (0 0 128 128)
+   - 保持相同的渐变ID命名规范
+   - 统一使用Gmail AI的设计元素
+
+---
+
+## 🎉 最新更新：图标统一设计 & 品牌升级
+
+### ✅ 全新的Gmail AI品牌形象！
+从v2.4.0版本开始，工具正式更名为"Gmail AI"并采用统一的图标设计：
+
+#### 🎨 新图标设计特点
+- **Email AI主题**：结合邮件信封和AI神经网络元素
+- **紫色渐变背景**：与AI按钮保持一致的品牌色彩
+- **现代化设计**：圆角矩形背景，符合现代UI设计趋势
+- **多层次元素**：
+  - 📧 邮件信封主体（白色半透明）
+  - 🧠 AI神经网络节点（蓝色渐变）
+  - ⚡ 智能波纹效果
+  - ✨ 装饰性光点
+
+#### 🔄 图标统一性
+- **扩展图标**：Chrome工具栏中的扩展图标
+- **AI Reply按钮**：Gmail中的AI回复按钮图标
+- **AI面板标题**：AI助手面板的标题图标
+- **所有图标**：采用相同的email AI主题设计
+
+#### 📝 品牌名称更新
+- **扩展名称**：Gmail AI（原：Gmail AI回复助手）
+- **界面标题**：Gmail AI（原：AI Assistant）
+- **描述文案**：AI-powered email assistant for Gmail
+- **多语言支持**：中英文界面均使用"Gmail AI"品牌名
+
+### 🔧 技术实现
+- **图标文件**：icons/icon16.png, icon32.png, icon48.png, icon128.png
+- **SVG源文件**：icons/icon.svg（矢量图标源文件）
+- **生成脚本**：generate_icons.py（Python图标生成器）
+- **按钮图标**：content.js 中的SVG代码已更新
+
+### 🎯 自定义图标
+如果您想修改图标设计：
+
+1. **修改SVG源文件** (icons/icon.svg)
+   - 调整颜色、形状、元素位置
+   - 保持24x24的viewBox比例
+
+2. **重新生成PNG图标**
+   ```bash
+   python generate_icons.py
+   ```
+
+3. **修改按钮图标** (content.js 第590-600行)
+   ```javascript
+   // 更新AI Reply按钮的SVG图标
+   aiButton.innerHTML = `<svg>您的自定义图标</svg>${buttonText}`;
+   ```
+
+### 🎨 推荐设计原则
+- **保持一致性**：所有图标使用相同的设计语言
+- **突出主题**：强调email和AI的结合
+- **适配尺寸**：确保在16x16到128x128都清晰可见
+- **品牌色彩**：使用紫色渐变保持品牌一致性
+
+---
+
+## 🎉 最新更新：面板宽度语言自适应
+
+### ✅ 智能面板宽度调整！
+从v2.3.0版本开始，AI面板会根据当前语言自动调整宽度：
+- **英文界面**：面板宽度为520px，为英文长句提供更多空间
+- **中文界面**：面板宽度为480px，保持紧凑美观的布局
+- **实时调整**：切换语言时面板宽度会立即更新
+- **响应式设计**：在小屏幕上仍然保持90vw的最大宽度限制
+
+### 🎯 技术实现
+- **动态宽度**: content.js 第753行根据`currentLanguage`变量动态设置宽度
+- **语言切换更新**: content.js 第185-190行在语言切换时同步更新面板宽度
+- **宽度配置**: 
+  - 英文: `520px` (适合较长的英文文本)
+  - 中文: `480px` (适合中文紧凑布局)
+
+### 🔧 自定义宽度设置
+如果您想修改面板宽度：
+
+1. **修改初始宽度** (content.js 第753行)
+   ```javascript
+   const panelWidth = currentLanguage === 'en' ? '您的英文宽度' : '您的中文宽度';
+   ```
+
+2. **修改语言切换时的宽度** (content.js 第187行)
+   ```javascript
+   const panelWidth = currentLanguage === 'en' ? '您的英文宽度' : '您的中文宽度';
+   ```
+
+### 🎨 推荐宽度设置
+- **紧凑型**: 英文460px，中文440px
+- **标准型**: 英文520px，中文480px（当前设置）
+- **宽松型**: 英文580px，中文520px
+- **超宽型**: 英文640px，中文560px
+
+---
+
+## 🎉 最新更新：扩展图标直接显示AI面板
+
+### ✅ 全新的扩展图标点击行为！
+从v2.2.0版本开始，点击扩展图标将直接在Gmail页面中显示AI回复面板：
+- **智能检测**：自动检测当前是否在Gmail页面
+- **直接显示**：在Gmail页面中直接显示AI回复面板，无需popup
+- **自动跳转**：如果不在Gmail页面，自动打开Gmail
+- **输入框检测**：智能查找邮件回复输入框并显示AI面板
+- **友好提示**：如果没有找到输入框，会显示友好的提示信息
+
+### 🎯 新的使用流程
+1. **在任何页面**：点击扩展图标
+2. **自动跳转**：如果不在Gmail，自动打开Gmail页面
+3. **打开回复框**：在Gmail中点击回复按钮
+4. **再次点击扩展图标**：直接显示AI回复面板
+5. **开始使用**：查看邮件总结，输入回复想法，AI优化
+
+### 🔧 技术实现
+- **文件位置**: background.js 第10-40行，content.js 第2570-2620行
+- **图标点击处理**: background.js 中的 `chrome.action.onClicked` 监听器
+- **消息传递**: 使用 `chrome.tabs.sendMessage` 发送 `showAIPanel` 消息
+- **面板显示**: content.js 中的消息监听器处理显示逻辑
+
+### 🎨 自定义设置
+如果您想修改点击行为：
+- **修改检测逻辑**: background.js 第15行的URL检测条件
+- **修改输入框选择器**: content.js 第2580-2585行的选择器数组
+- **修改提示信息**: content.js 第2600行的通知文本
+
+---
+
+## 🎉 最新更新：AI助手风格Popup界面
+
+### ✅ 全新的扩展弹出界面！
+从v2.1.0版本开始，点击扩展图标将显示全新的AI助手风格界面：
+- **简洁现代设计**：类似AI助手面板的紫色渐变风格
+- **多语言支持**：右上角语言切换按钮，支持中英文实时切换
+- **功能介绍**：清晰展示智能邮件总结、AI回复优化、多语言支持等功能
+- **使用指南**：4步骤使用说明，帮助用户快速上手
+- **实时状态**：显示扩展状态、使用统计、当前AI模型等信息
+- **快速操作**：一键打开Gmail、快速访问高级设置
+
+### 🎯 新界面特点
+1. **AI助手风格**：与Gmail中的AI面板保持一致的设计语言
+2. **状态指示器**：绿色圆点表示就绪，黄色表示检查中，红色表示错误
+3. **语言切换**：点击右上角"🌐 中文"/"🌐 English"即可切换语言
+4. **使用统计**：显示总回复数和今日使用次数
+5. **模型信息**：底部显示当前使用的AI模型（如DeepSeek-V3）
+
+### 🔧 界面自定义
+如果您想修改popup界面：
+- **文件位置**: popup/popup.html, popup/popup.css, popup/popup.js
+- **颜色主题**: popup.css 第15行渐变色设置
+- **界面尺寸**: popup.css 第9行 `width: 360px`
+- **语言配置**: popup.js 第10-60行 `POPUP_LANGUAGE_CONFIG`
+
+---
 
 ## 🎉 最新更新：完整格式保持功能
 
@@ -354,3 +867,148 @@ const inputSelectors = [
 2. 找到第380-387行的`stylePrompts`
 3. 修改风格描述或添加新风格
 4. 在`
+
+## 🌐 多语言功能（新增）
+
+### 语言切换
+- **位置**: AI面板右上角的语言切换按钮
+- **功能**: 点击"🌐 中文"切换为中文界面，点击"🌐 English"切换为英文界面
+- **影响范围**: 
+  - 界面文本（按钮、标题、提示等）
+  - AI回复和总结的语言
+  - 错误提示信息
+
+### 默认语言设置
+- **文件**: background.js
+- **位置**: 第75行 `language: 'en'`
+- **可选值**: 
+  - `'en'` - 英文（默认）
+  - `'zh'` - 中文
+- **修改方法**: 将 `'en'` 改为 `'zh'` 即可默认使用中文
+
+## 🔧 主要功能参数修改
+
+### 1. API配置
+- **文件**: background.js
+- **API密钥**: 第9行 `apiKey: 'sk-moyezvpaajlpslwhpieojhplhxafpyhgpoiueqlqcatjpbqt'`
+- **AI模型**: 第10行 `model: 'deepseek-ai/DeepSeek-V3'`
+- **最大令牌数**: 第11行 `maxTokens: 1000`
+- **温度参数**: 第12行 `temperature: 0.7` (0.1-1.0，越高越创意)
+
+### 2. 回复风格设置
+- **文件**: background.js
+- **默认风格**: 第13行 `defaultStyle: 'friendly'`
+- **可选风格**: 
+  - `'professional'` - 专业正式
+  - `'friendly'` - 友好亲切
+  - `'concise'` - 简洁直接
+  - `'detailed'` - 详细全面
+
+### 3. 界面文本自定义
+- **文件**: background.js
+- **英文文本**: 第15-45行 `LANGUAGE_CONFIG.en.ui`
+- **中文文本**: 第65-95行 `LANGUAGE_CONFIG.zh.ui`
+- **可修改项目**:
+  - 按钮文本 (`aiReplyButton`, `summaryButton`)
+  - 面板标题 (`aiAssistant`)
+  - 提示信息 (`analyzing`, `optimizing`)
+  - 错误信息 (`noEmailContent`, `optimizeFailed`)
+
+### 4. AI提示词自定义
+- **文件**: background.js
+- **英文提示词**: 第12-18行 `LANGUAGE_CONFIG.en.prompts`
+- **中文提示词**: 第62-68行 `LANGUAGE_CONFIG.zh.prompts`
+- **可修改项目**:
+  - `summary` - 邮件总结提示词
+  - `reply` - 回复生成提示词
+  - `optimize` - 文本优化提示词
+
+## 🎨 界面样式修改
+
+### 1. AI按钮样式
+- **文件**: content.js
+- **位置**: 第580-600行 `addFloatingAIButton` 函数
+- **可修改**: 按钮颜色、大小、位置、字体
+
+### 2. AI面板样式
+- **文件**: content.js
+- **位置**: 第784-1000行 `addAIPanelStyles` 函数
+- **可修改**: 面板大小、颜色、字体、布局
+
+### 3. 语言切换按钮样式
+- **文件**: content.js
+- **位置**: 第820-835行 `.language-switch-btn` 样式
+- **可修改**: 按钮颜色、边框、悬停效果
+
+## ⚙️ 高级设置
+
+### 1. 自动功能开关
+- **文件**: background.js
+- **自动生成**: 第14行 `autoGenerate: true`
+- **显示通知**: 第15行 `showNotifications: true`
+- **保存历史**: 第16行 `saveHistory: false`
+
+### 2. 性能参数
+- **文件**: background.js
+- **超时时间**: 第19行 `timeout: 30` (秒)
+- **重试次数**: 第20行 `retryCount: 2`
+- **回复数量**: 第17行 `replyCount: 3`
+
+### 3. 流式输出速度
+- **文件**: content.js
+- **打字速度**: 第1395行 `speed = 30` (毫秒/字符)
+- **修改方法**: 数值越小打字越快
+
+## 🔍 调试和测试
+
+### 1. 控制台日志
+- **查看方法**: F12 → Console 标签
+- **关键日志**: 
+  - "Gmail AI回复助手初始化完成，当前语言: xx"
+  - "语言已切换到: xx"
+  - API调用成功/失败信息
+
+### 2. 语言切换测试
+- **测试步骤**:
+  1. 打开Gmail并进入邮件页面
+  2. 点击AI回复按钮打开面板
+  3. 点击右上角语言切换按钮
+  4. 观察界面文本是否正确切换
+  5. 测试AI回复是否使用正确语言
+
+### 3. API连接测试
+- **位置**: 扩展设置页面
+- **功能**: 测试API密钥和模型是否正常工作
+- **访问方法**: 右键扩展图标 → 选项
+
+## 📝 常见问题
+
+### 1. 语言切换不生效
+- **检查**: 是否正确配置了 `LANGUAGE_CONFIG`
+- **解决**: 刷新页面重新加载扩展
+
+### 2. AI回复语言不对
+- **原因**: AI提示词可能需要调整
+- **解决**: 修改对应语言的 `prompts` 配置
+
+### 3. 界面文本显示异常
+- **检查**: `currentLanguageConfig` 是否正确加载
+- **解决**: 检查控制台错误信息，重新安装扩展
+
+## 🚀 更新说明
+
+### v2.0 新增功能
+- ✅ 完整的中英文双语支持
+- ✅ 实时语言切换功能
+- ✅ 多语言AI提示词系统
+- ✅ 本地化错误提示
+- ✅ 语言偏好记忆功能
+
+### 使用建议
+1. 首次使用建议先测试语言切换功能
+2. 根据使用习惯调整默认语言设置
+3. 可以自定义AI提示词以获得更好的回复效果
+4. 定期检查控制台日志确保功能正常
+
+---
+💡 提示：修改任何配置后建议刷新Gmail页面以确保更改生效。

@@ -6,6 +6,202 @@
 // 导入API工具
 importScripts('utils/api.js');
 
+/**
+ * 处理扩展图标点击事件
+ * 在Gmail页面中显示AI面板，而不是popup
+ */
+chrome.action.onClicked.addListener(async (tab) => {
+    console.log('扩展图标被点击，标签页:', tab.url);
+    
+    try {
+        // 检查是否在Gmail页面
+        if (tab.url && tab.url.includes('mail.google.com')) {
+            // 在Gmail页面中显示AI面板
+            await chrome.tabs.sendMessage(tab.id, {
+                action: 'showAIPanel'
+            });
+            console.log('✅ 已发送显示AI面板消息到Gmail页面');
+        } else {
+            // 不在Gmail页面，打开Gmail
+            await chrome.tabs.create({
+                url: 'https://mail.google.com',
+                active: true
+            });
+            console.log('✅ 已打开Gmail页面');
+        }
+    } catch (error) {
+        console.error('❌ 处理扩展图标点击失败:', error);
+        
+        // 如果发送消息失败，可能是页面还没加载完成，尝试打开Gmail
+        try {
+            await chrome.tabs.create({
+                url: 'https://mail.google.com',
+                active: true
+            });
+        } catch (fallbackError) {
+            console.error('❌ 备用方案也失败:', fallbackError);
+        }
+    }
+});
+
+// 多语言配置
+const LANGUAGE_CONFIG = {
+    en: {
+        // AI提示词
+        prompts: {
+            summary: "Please analyze the following email content and provide a concise summary in English. Include: 1) Email subject/topic, 2) Sender's intent, 3) Key information, 4) Action items needed. Format as clear bullet points:",
+            reply: "Based on the following email content, generate a professional reply in English. Style: {style}. Email content:",
+            optimize: "Please optimize the following reply text in English to make it more professional and clear. Original text:"
+        },
+        // 界面文本
+        ui: {
+            aiAssistant: "Gmail AI",
+            emailSummary: "📄 Email Summary",
+            yourReply: "💬 Your Reply",
+            optimizedReply: "🎯 Optimized Reply",
+            useReply: "📝 Use This Reply",
+            reOptimize: "🔄 Re-optimize",
+            analyzing: "🤖 Analyzing email content...",
+            optimizing: "🤖 Optimizing your reply...",
+            inputHint: "💡 Tip: Press Enter to quickly optimize reply",
+            optimizeButton: "✨ AI Optimize Reply",
+            aiReplyButton: "Gmail AI",
+            summaryButton: "AI Summary",
+            languageSwitch: "🌐 中文",
+            noEmailContent: "❌ No email content found, please use in email page",
+            optimizeFailed: "❌ Optimization failed",
+            summaryFailed: "❌ Summary failed",
+            replyInserted: "Reply inserted into email",
+            extensionUpdated: "🔄 Gmail AI updated",
+            refreshPage: "Refresh Page",
+            toneStyle: "🎭 Tone Style",
+            toneDefault: "Natural",
+            toneProfessional: "Professional",
+            toneFriendly: "Friendly",
+            toneConcise: "Concise",
+            toneCreative: "Creative",
+            tonePolite: "Polite",
+            toneHintDefault: "Natural and appropriate tone",
+            toneHintProfessional: "Formal business communication",
+            toneHintFriendly: "Warm and approachable style",
+            toneHintConcise: "Brief and direct response",
+            toneHintCreative: "Engaging and thoughtful tone",
+            toneHintPolite: "Extra courteous and respectful"
+        },
+        // 回复风格
+        styles: {
+            professional: "professional and formal business style",
+            friendly: "friendly and warm style", 
+            concise: "concise and direct style",
+            detailed: "detailed and comprehensive style"
+        },
+        // 语气风格配置
+        toneStyles: {
+            default: {
+                name: "Default",
+                prompt: "Reply in a natural and appropriate tone"
+            },
+            professional: {
+                name: "Professional",
+                prompt: "Reply in a professional, formal business tone"
+            },
+            friendly: {
+                name: "Friendly",
+                prompt: "Reply in a warm, friendly, and approachable tone"
+            },
+            concise: {
+                name: "Concise",
+                prompt: "Reply in a brief, direct, and to-the-point tone"
+            },
+            creative: {
+                name: "Creative",
+                prompt: "Reply in a creative, engaging, and thoughtful tone"
+            },
+            polite: {
+                name: "Polite",
+                prompt: "Reply in an extra polite, courteous, and respectful tone"
+            }
+        }
+    },
+    zh: {
+        // AI提示词
+        prompts: {
+            summary: "请分析以下邮件内容并用中文提供简洁的总结。包括：1) 邮件主题，2) 发件人意图，3) 关键信息，4) 需要回复的要点。请用清晰的要点格式：",
+            reply: "根据以下邮件内容，用中文生成一个专业的回复。风格：{style}。邮件内容：",
+            optimize: "请用中文优化以下回复文本，使其更加专业和清晰。原始文本："
+        },
+        // 界面文本
+        ui: {
+            aiAssistant: "Gmail AI",
+            emailSummary: "📄 邮件总结",
+            yourReply: "💬 您的回复",
+            optimizedReply: "🎯 优化后的回复",
+            useReply: "📝 使用此回复",
+            reOptimize: "🔄 重新优化",
+            analyzing: "🤖 正在分析邮件内容...",
+            optimizing: "🤖 正在优化您的回复...",
+            inputHint: "💡 提示：按 Enter 键快速优化回复",
+            optimizeButton: "✨ AI优化回复",
+            aiReplyButton: "Gmail AI",
+            summaryButton: "AI总结",
+            languageSwitch: "🌐 English",
+            noEmailContent: "❌ 未找到邮件内容，请确保在邮件页面中使用",
+            optimizeFailed: "❌ 优化失败",
+            summaryFailed: "❌ 总结失败",
+            replyInserted: "回复已插入到邮件中",
+            extensionUpdated: "🔄 Gmail AI已更新",
+            refreshPage: "刷新页面",
+            toneStyle: "🎭 语气风格",
+            toneDefault: "自然",
+            toneProfessional: "专业",
+            toneFriendly: "友好",
+            toneConcise: "简洁",
+            toneCreative: "创意",
+            tonePolite: "礼貌",
+            toneHintDefault: "自然和适当的语气",
+            toneHintProfessional: "正式的商业沟通",
+            toneHintFriendly: "温暖和可接近的风格",
+            toneHintConcise: "简洁和直接的回应",
+            toneHintCreative: "引人入胜和深思熟虑的语气",
+            toneHintPolite: "额外礼貌和尊重"
+        },
+        // 回复风格
+        styles: {
+            professional: "专业、正式的商务风格",
+            friendly: "友好、亲切的风格",
+            concise: "简洁、直接的风格", 
+            detailed: "详细、全面的风格"
+        },
+        // 语气风格配置
+        toneStyles: {
+            default: {
+                name: "Default",
+                prompt: "Reply in a natural and appropriate tone"
+            },
+            professional: {
+                name: "Professional",
+                prompt: "Reply in a professional, formal business tone"
+            },
+            friendly: {
+                name: "Friendly",
+                prompt: "Reply in a warm, friendly, and approachable tone"
+            },
+            concise: {
+                name: "Concise",
+                prompt: "Reply in a brief, direct, and to-the-point tone"
+            },
+            creative: {
+                name: "Creative",
+                prompt: "Reply in a creative, engaging, and thoughtful tone"
+            },
+            polite: {
+                name: "Polite",
+                prompt: "Reply in an extra polite, courteous, and respectful tone"
+            }
+        }
+    }
+};
+
 // 默认配置 - 扩展安装时自动设置
 const DEFAULT_CONFIG = {
     apiKey: 'sk-moyezvpaajlpslwhpieojhplhxafpyhgpoiueqlqcatjpbqt',
@@ -18,7 +214,7 @@ const DEFAULT_CONFIG = {
     saveHistory: false,
     replyCount: 3,
     customPrompt: '',
-    language: 'auto',
+    language: 'en', // 默认英文
     timeout: 30,
     retryCount: 2,
     isConfigured: true // 标记已配置，避免用户需要手动设置
@@ -90,6 +286,49 @@ chrome.runtime.onStartup.addListener(async () => {
         console.error('❌ 启动配置检查失败:', error);
     }
 });
+
+/**
+ * 获取当前语言配置
+ */
+async function getCurrentLanguageConfig() {
+    try {
+        const config = await chrome.storage.sync.get(['language']);
+        const currentLang = config.language || 'en';
+        return {
+            lang: currentLang,
+            config: LANGUAGE_CONFIG[currentLang]
+        };
+    } catch (error) {
+        console.error('获取语言配置失败:', error);
+        return {
+            lang: 'en',
+            config: LANGUAGE_CONFIG.en
+        };
+    }
+}
+
+/**
+ * 切换语言
+ */
+async function switchLanguage() {
+    try {
+        const config = await chrome.storage.sync.get(['language']);
+        const currentLang = config.language || 'en';
+        const newLang = currentLang === 'en' ? 'zh' : 'en';
+        
+        await chrome.storage.sync.set({ language: newLang });
+        console.log(`语言已切换: ${currentLang} -> ${newLang}`);
+        
+        return {
+            success: true,
+            newLanguage: newLang,
+            config: LANGUAGE_CONFIG[newLang]
+        };
+    } catch (error) {
+        console.error('切换语言失败:', error);
+        throw error;
+    }
+}
 
 // 监听来自content script的消息
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -191,6 +430,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true;
     }
     
+    // 语言相关消息处理
+    if (request.action === 'getLanguageConfig') {
+        getCurrentLanguageConfig()
+            .then(result => sendResponse({ success: true, data: result }))
+            .catch(error => sendResponse({ success: false, error: error.message }));
+        return true;
+    }
+    
+    if (request.action === 'switchLanguage') {
+        switchLanguage()
+            .then(result => sendResponse({ success: true, data: result }))
+            .catch(error => sendResponse({ success: false, error: error.message }));
+        return true;
+    }
+    
     sendResponse({ success: false, error: '未知操作' });
     return true; // 保持消息通道开放
 });
@@ -233,19 +487,13 @@ async function handleGenerateSummary(data) {
         
         console.log('正在生成邮件总结');
         
-        // 构建Monica风格的总结提示词（突出人物和事件）
-        const prompt = `请以第三人称视角总结这封邮件，重点突出人物和具体事件：
+        // 获取当前语言配置
+        const { lang, config: langConfig } = await getCurrentLanguageConfig();
+        
+        // 构建多语言总结提示词
+        const prompt = `${langConfig.prompts.summary}
 
-格式要求：
-1. 开头说明：[发件人姓名]向你发送了邮件
-2. 核心事件：用1-2句话说明发生了什么事情，重要信息用**粗体**标记
-3. 具体内容：如有重要细节、时间、地点、要求等，用要点列出
-4. 语言自然流畅，就像朋友在向你转述邮件内容
-
-邮件内容：
-${emailContent}
-
-请用简洁自然的中文表达：`;
+${emailContent}`;
 
         // 调用API
         const summary = await callAIAPI(prompt);
@@ -272,13 +520,13 @@ async function handleOptimizeText(data) {
         
         console.log('正在优化文本');
         
-        // 构建优化提示词
-        const prompt = `请优化以下文本，使其更加专业、清晰、礼貌。保持原意不变，但改进语言表达：
+        // 获取当前语言配置
+        const { lang, config: langConfig } = await getCurrentLanguageConfig();
+        
+        // 构建多语言优化提示词
+        const prompt = `${langConfig.prompts.optimize}
 
-原文本：
-${text}
-
-请提供优化后的版本：`;
+${text}`;
 
         // 调用API
         const optimizedText = await callAIAPI(prompt);
@@ -321,7 +569,7 @@ ${text}`;
 }
 
 /**
- * 处理回复优化请求
+ * 处理优化回复请求
  */
 async function handleOptimizeReply(data) {
     try {
@@ -335,29 +583,22 @@ async function handleOptimizeReply(data) {
         console.log('用户回复:', userReply);
         console.log('邮件上下文长度:', emailContext ? emailContext.length : 0);
         
-        // 根据风格设置不同的优化提示
-        const stylePrompts = {
-            professional: '专业、正式的商务风格',
-            friendly: '友好、亲切的风格',
-            concise: '简洁、直接的风格',
-            detailed: '详细、全面的风格'
-        };
+        // 获取当前语言配置
+        const { lang, config: langConfig } = await getCurrentLanguageConfig();
         
-        const styleDescription = stylePrompts[style] || stylePrompts.professional;
+        // 获取风格描述
+        const styleDescription = langConfig.styles[style] || langConfig.styles.professional;
         
-        let prompt = `请帮我优化以下邮件回复，使其更加${styleDescription}。要求：
+        // 构建多语言优化提示词
+        let prompt = `${langConfig.prompts.optimize}
 
-1. 保持原意不变
-2. 改善语言表达和语法
-3. 使语气更加得体和专业
-4. 确保逻辑清晰、条理分明
-5. 适当调整格式和结构`;
+Style: ${styleDescription}`;
 
         // 如果有邮件上下文，加入上下文信息
         if (emailContext && emailContext.trim()) {
             prompt += `
 
-原邮件内容：
+Original email content:
 ${emailContext}
 
 ---`;
@@ -365,10 +606,8 @@ ${emailContext}
 
         prompt += `
 
-我的回复草稿：
-${userReply}
-
-请提供优化后的回复：`;
+User's reply draft:
+${userReply}`;
         
         const optimizedReply = await callAIAPI(prompt);
         
@@ -737,19 +976,13 @@ async function handleGenerateSummaryStream(data) {
         
         console.log('正在生成邮件总结（流式）');
         
-        // 构建Monica风格的总结提示词（突出人物和事件）
-        const prompt = `请以第三人称视角总结这封邮件，重点突出人物和具体事件：
+        // 获取当前语言配置
+        const { lang, config: langConfig } = await getCurrentLanguageConfig();
+        
+        // 构建多语言总结提示词
+        const prompt = `${langConfig.prompts.summary}
 
-格式要求：
-1. 开头说明：[发件人姓名]向你发送了邮件
-2. 核心事件：用1-2句话说明发生了什么事情，重要信息用**粗体**标记
-3. 具体内容：如有重要细节、时间、地点、要求等，用要点列出
-4. 语言自然流畅，就像朋友在向你转述邮件内容
-
-邮件内容：
-${emailContent}
-
-请用简洁自然的中文表达：`;
+${emailContent}`;
 
         // 调用API
         const summary = await callAIAPI(prompt);
@@ -768,7 +1001,7 @@ ${emailContent}
  */
 async function handleOptimizeReplyStream(data) {
     try {
-        const { userReply, emailContext, style = 'professional' } = data;
+        const { userReply, emailContext, style = 'professional', tone = 'default' } = data;
         
         if (!userReply || userReply.trim() === '') {
             throw new Error('没有提供要优化的回复内容');
@@ -777,30 +1010,30 @@ async function handleOptimizeReplyStream(data) {
         console.log('开始优化用户回复（流式）...');
         console.log('用户回复:', userReply);
         console.log('邮件上下文长度:', emailContext ? emailContext.length : 0);
+        console.log('选择的语气风格:', tone);
         
-        // 根据风格设置不同的优化提示
-        const stylePrompts = {
-            professional: '专业、正式的商务风格',
-            friendly: '友好、亲切的风格',
-            concise: '简洁、直接的风格',
-            detailed: '详细、全面的风格'
-        };
+        // 获取当前语言配置
+        const { lang, config: langConfig } = await getCurrentLanguageConfig();
         
-        const styleDescription = stylePrompts[style] || stylePrompts.professional;
+        // 获取风格描述
+        const styleDescription = langConfig.styles[style] || langConfig.styles.professional;
         
-        let prompt = `请帮我优化以下邮件回复，使其更加${styleDescription}。要求：
+        // 获取语气风格描述
+        const toneDescription = langConfig.toneStyles[tone] ? 
+            langConfig.toneStyles[tone].prompt : 
+            langConfig.toneStyles.default.prompt;
+        
+        // 构建多语言优化提示词
+        let prompt = `${langConfig.prompts.optimize}
 
-1. 保持原意不变，但改善表达方式
-2. 使用更专业和得体的语言
-3. 确保语法正确，逻辑清晰
-4. 适当调整语气和格式
-5. 让回复更加有条理和易读`;
+Style: ${styleDescription}
+Tone: ${toneDescription}`;
 
         // 如果有邮件上下文，加入上下文信息
         if (emailContext && emailContext.trim()) {
             prompt += `
 
-原邮件内容：
+Original email content:
 ${emailContext}
 
 ---`;
@@ -808,10 +1041,8 @@ ${emailContext}
 
         prompt += `
 
-我的回复草稿：
-${userReply}
-
-请提供优化后的回复（直接输出优化后的内容，不需要额外说明）：`;
+User's reply draft:
+${userReply}`;
         
         const optimizedReply = await callAIAPI(prompt);
         

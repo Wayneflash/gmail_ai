@@ -9,6 +9,274 @@ let currentEmailContent = '';
 let aiFloatingButton = null;
 let aiPanel = null;
 let currentReplyBox = null;
+let currentLanguage = 'en'; // 当前语言
+let currentLanguageConfig = null; // 当前语言配置
+
+/**
+ * 获取当前语言配置
+ */
+async function getCurrentLanguageConfig() {
+    try {
+        const response = await safeRuntimeMessage({
+            action: 'getLanguageConfig'
+        });
+        
+        if (response.success) {
+            currentLanguage = response.data.lang;
+            currentLanguageConfig = response.data.config;
+            return response.data;
+        } else {
+            console.error('获取语言配置失败:', response.error);
+            // 使用默认英文配置
+            currentLanguage = 'en';
+            currentLanguageConfig = getDefaultEnglishConfig();
+            return { lang: 'en', config: currentLanguageConfig };
+        }
+    } catch (error) {
+        console.error('获取语言配置失败:', error);
+        // 使用默认英文配置
+        currentLanguage = 'en';
+        currentLanguageConfig = getDefaultEnglishConfig();
+        return { lang: 'en', config: currentLanguageConfig };
+    }
+}
+
+/**
+ * 切换语言
+ */
+async function switchLanguage() {
+    try {
+        const response = await safeRuntimeMessage({
+            action: 'switchLanguage'
+        });
+        
+        if (response.success) {
+            currentLanguage = response.data.newLanguage;
+            currentLanguageConfig = response.data.config;
+            
+            // 更新界面文本
+            updateUILanguage();
+            
+            console.log('语言已切换到:', currentLanguage);
+            showNotification(
+                currentLanguageConfig.ui.languageSwitch === '🌐 中文' ? 
+                'Language switched to English' : '语言已切换为中文', 
+                'success'
+            );
+            
+            return response.data;
+        } else {
+            throw new Error(response.error);
+        }
+    } catch (error) {
+        console.error('切换语言失败:', error);
+        showNotification('Language switch failed', 'error');
+        throw error;
+    }
+}
+
+/**
+ * 获取默认英文配置（备用）
+ */
+function getDefaultEnglishConfig() {
+    return {
+        ui: {
+            aiAssistant: "Gmail AI",
+            emailSummary: "📄 Email Summary",
+            yourReply: "💬 Your Reply",
+            optimizedReply: "🎯 Optimized Reply",
+            useReply: "📝 Use This Reply",
+            reOptimize: "🔄 Re-optimize",
+            analyzing: "🤖 Analyzing email content...",
+            optimizing: "🤖 Optimizing your reply...",
+            inputHint: "💡 Tip: Press Enter to quickly optimize reply",
+            optimizeButton: "✨ AI Optimize Reply",
+            aiReplyButton: "Gmail AI",
+            summaryButton: "AI Summary",
+            languageSwitch: "🌐 中文",
+            noEmailContent: "❌ No email content found, please use in email page",
+            optimizeFailed: "❌ Optimization failed",
+            summaryFailed: "❌ Summary failed",
+            replyInserted: "Reply inserted into email",
+            extensionUpdated: "🔄 Gmail AI updated",
+            refreshPage: "Refresh Page",
+            toneStyle: "🎭 Tone Style",
+            toneDefault: "Natural",
+            toneProfessional: "Professional",
+            toneFriendly: "Friendly",
+            toneConcise: "Concise",
+            toneCreative: "Creative",
+            tonePolite: "Polite",
+            toneHintDefault: "Natural and appropriate tone",
+            toneHintProfessional: "Formal business communication",
+            toneHintFriendly: "Warm and approachable style",
+            toneHintConcise: "Brief and direct response",
+            toneHintCreative: "Engaging and thoughtful tone",
+            toneHintPolite: "Extra courteous and respectful",
+        }
+    };
+}
+
+/**
+ * 更新界面语言
+ */
+function updateUILanguage() {
+    if (!currentLanguageConfig) return;
+    
+    // 更新AI面板中的文本
+    if (aiPanel) {
+        updateAIPanelLanguage();
+    }
+    
+    // 更新所有AI按钮的文本
+    updateAIButtonsLanguage();
+    
+    // 更新通知文本
+    updateNotificationLanguage();
+}
+
+/**
+ * 更新AI面板语言
+ */
+function updateAIPanelLanguage() {
+    if (!aiPanel || !currentLanguageConfig) return;
+    
+    const ui = currentLanguageConfig.ui;
+    
+    // 更新标题
+    const title = aiPanel.querySelector('.ai-panel-title');
+    if (title) {
+        title.textContent = ui.aiAssistant;
+    }
+    
+    // 更新语言切换按钮
+    const langBtn = aiPanel.querySelector('.language-switch-btn');
+    if (langBtn) {
+        langBtn.textContent = ui.languageSwitch;
+    }
+    
+    // 更新各个区域的标题
+    const emailSummaryTitle = aiPanel.querySelector('.email-summary-section h4');
+    if (emailSummaryTitle) {
+        emailSummaryTitle.textContent = ui.emailSummary;
+    }
+    
+    const replyTitle = aiPanel.querySelector('.reply-input-section h4');
+    if (replyTitle) {
+        replyTitle.textContent = ui.yourReply;
+    }
+    
+    const optimizedTitle = aiPanel.querySelector('.optimized-result-section h4');
+    if (optimizedTitle) {
+        optimizedTitle.textContent = ui.optimizedReply;
+    }
+    
+    // 更新输入提示
+    const inputHint = aiPanel.querySelector('.input-hint');
+    if (inputHint) {
+        inputHint.textContent = ui.inputHint;
+    }
+    
+    // 更新按钮文本
+    const optimizeBtn = aiPanel.querySelector('.optimize-btn');
+    if (optimizeBtn) {
+        optimizeBtn.textContent = ui.optimizeButton;
+    }
+    
+    const useBtn = aiPanel.querySelector('.use-reply-btn');
+    if (useBtn) {
+        useBtn.textContent = ui.useReply;
+    }
+    
+    const reOptimizeBtn = aiPanel.querySelector('.re-optimize-btn');
+    if (reOptimizeBtn) {
+        reOptimizeBtn.textContent = ui.reOptimize;
+    }
+    
+    // 更新输入框占位符
+    const replyInput = aiPanel.querySelector('.reply-input');
+    if (replyInput) {
+        replyInput.placeholder = ui.yourReply.replace('💬 ', '') + '...';
+    }
+    
+    // 更新语气风格选择器
+    const toneStyleSelect = aiPanel.querySelector('.tone-style-select');
+    const toneStyleLabel = aiPanel.querySelector('.tone-style-label');
+    const toneStyleHint = aiPanel.querySelector('.tone-style-hint');
+    if (toneStyleSelect && toneStyleLabel) {
+        toneStyleLabel.textContent = ui.toneStyle;
+        
+        // 保存当前选择的值
+        const currentValue = toneStyleSelect.value;
+        
+        // 更新选项文本
+        const options = toneStyleSelect.querySelectorAll('option');
+        if (options.length >= 6) {
+            options[0].textContent = ui.toneDefault;
+            options[1].textContent = ui.toneProfessional;
+            options[2].textContent = ui.toneFriendly;
+            options[3].textContent = ui.toneConcise;
+            options[4].textContent = ui.toneCreative;
+            options[5].textContent = ui.tonePolite;
+        }
+        
+        // 恢复选择的值
+        toneStyleSelect.value = currentValue;
+        
+        // 更新提示文本
+        if (toneStyleHint) {
+            const hintMap = {
+                'default': ui.toneHintDefault,
+                'professional': ui.toneHintProfessional,
+                'friendly': ui.toneHintFriendly,
+                'concise': ui.toneHintConcise,
+                'creative': ui.toneHintCreative,
+                'polite': ui.toneHintPolite
+            };
+            toneStyleHint.textContent = hintMap[currentValue] || ui.toneHintDefault;
+        }
+    }
+    
+    // 根据当前语言调整面板宽度
+    const panelWidth = currentLanguage === 'en' ? '520px' : '480px';
+    aiPanel.style.width = panelWidth;
+    
+    console.log(`✅ 面板语言已更新为 ${currentLanguage}，宽度调整为 ${panelWidth}`);
+}
+
+/**
+ * 更新AI按钮语言
+ */
+function updateAIButtonsLanguage() {
+    if (!currentLanguageConfig) return;
+    
+    const ui = currentLanguageConfig.ui;
+    
+    // 更新所有AI回复按钮
+    const aiButtons = document.querySelectorAll('.ai-floating-button');
+    aiButtons.forEach(button => {
+        button.textContent = ui.aiReplyButton;
+    });
+    
+    // 更新所有AI总结按钮
+    const summaryButtons = document.querySelectorAll('.ai-summary-button');
+    summaryButtons.forEach(button => {
+        const svg = button.querySelector('svg');
+        if (svg) {
+            button.innerHTML = svg.outerHTML + ui.summaryButton;
+        } else {
+            button.textContent = ui.summaryButton;
+        }
+    });
+}
+
+/**
+ * 更新通知语言
+ */
+function updateNotificationLanguage() {
+    // 这个函数可以在需要时实现
+    // 主要用于更新当前显示的通知文本
+}
 
 /**
  * 显示扩展更新提示
@@ -90,10 +358,13 @@ function showExtensionUpdateNotice() {
 /**
  * 初始化扩展
  */
-function initializeExtension() {
+async function initializeExtension() {
     if (isInitialized) return;
     
     console.log('Gmail AI回复助手正在初始化...');
+    
+    // 初始化语言配置
+    await getCurrentLanguageConfig();
     
     // 添加CSS样式
     addAIPanelStyles();
@@ -104,7 +375,7 @@ function initializeExtension() {
         checkForEmailContent();
         checkForInputBoxes();
         isInitialized = true;
-        console.log('Gmail AI回复助手初始化完成');
+        console.log('Gmail AI回复助手初始化完成，当前语言:', currentLanguage);
     }, 1000);
 }
 
@@ -191,12 +462,18 @@ function addEmailSummaryButton(emailContainer) {
         if (emailHeader && !emailHeader.querySelector('.ai-summary-button')) {
             const summaryButton = document.createElement('button');
             summaryButton.className = 'ai-summary-button';
+            
+            // 使用多语言文本
+            const buttonText = currentLanguageConfig ? 
+                currentLanguageConfig.ui.summaryButton : 
+                'AI Summary';
+            
             summaryButton.innerHTML = `
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"/>
                     <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"/>
                 </svg>
-                AI总结
+                ${buttonText}
             `;
             
             summaryButton.style.cssText = `
@@ -254,7 +531,20 @@ function checkForInputBoxes() {
             console.log(`📝 选择器 "${selector}" 找到 ${inputBoxes.length} 个元素`);
             
             inputBoxes.forEach(inputBox => {
-                if (isValidInputBox(inputBox) && !inputBox.hasAttribute('data-ai-enhanced')) {
+                // 检查是否已经增强过
+                if (inputBox.hasAttribute('data-ai-enhanced')) {
+                    return;
+                }
+                
+                // 检查父容器是否已经有AI按钮容器
+                const inputParent = inputBox.parentElement;
+                if (inputParent && inputParent.querySelector('.ai-button-container')) {
+                    console.log('⚠️ 输入框父容器已有AI按钮，跳过增强');
+                    inputBox.setAttribute('data-ai-enhanced', 'true');
+                    return;
+                }
+                
+                if (isValidInputBox(inputBox)) {
                     console.log('✅ 找到有效输入框:', inputBox);
                     enhanceInputBox(inputBox);
                     inputBox.setAttribute('data-ai-enhanced', 'true');
@@ -326,10 +616,20 @@ function enhanceInputBox(inputBox) {
  * 添加浮动AI按钮（移到下方，类似其他AI工具）
  */
 function addFloatingAIButton(inputBox) {
-    // 移除旧的按钮
+    // 移除旧的按钮（包括输入框内和父容器中的）
     const existingButton = inputBox.querySelector('.ai-floating-button');
     if (existingButton) {
         existingButton.remove();
+    }
+    
+    // 检查父容器中是否已经有按钮容器
+    const inputParent = inputBox.parentElement;
+    if (inputParent) {
+        const existingContainer = inputParent.querySelector('.ai-button-container');
+        if (existingContainer) {
+            existingContainer.remove();
+            console.log('🗑️ 移除了已存在的AI按钮容器');
+        }
     }
     
     // 创建浮动按钮容器（放在输入框下方）
@@ -346,14 +646,13 @@ function addFloatingAIButton(inputBox) {
     // 创建AI按钮
     const aiButton = document.createElement('button');
     aiButton.className = 'ai-floating-button';
-    aiButton.innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"/>
-            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"/>
-            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2"/>
-        </svg>
-        AI回复
-    `;
+    
+    // 使用多语言文本
+    const buttonText = currentLanguageConfig ? 
+        currentLanguageConfig.ui.aiReplyButton : 
+        'Gmail AI';
+    
+    aiButton.innerHTML = buttonText;
     
     // 设置按钮样式（类似其他AI工具的风格）
     aiButton.style.cssText = `
@@ -398,9 +697,9 @@ function addFloatingAIButton(inputBox) {
     buttonContainer.appendChild(aiButton);
     
     // 将容器添加到输入框的父容器中
-    const inputParent = inputBox.parentElement;
     if (inputParent) {
         inputParent.appendChild(buttonContainer);
+        console.log('✅ AI按钮容器已添加到输入框父容器');
     }
     
     // 监听输入框焦点
@@ -440,47 +739,67 @@ function showAIPanel(inputBox) {
         aiPanel.remove();
     }
     
+    // 获取多语言文本
+    const ui = currentLanguageConfig ? currentLanguageConfig.ui : getDefaultEnglishConfig().ui;
+    
     // 创建AI面板
     aiPanel = document.createElement('div');
     aiPanel.className = 'ai-panel';
     aiPanel.innerHTML = `
         <div class="ai-panel-header">
             <div class="ai-panel-title">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="12" r="3" fill="currentColor"/>
-                    <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1" stroke="currentColor" stroke-width="2"/>
-                </svg>
-                AI回复助手
+                ${ui.aiAssistant}
             </div>
-            <button class="ai-panel-close">×</button>
+            <div class="ai-panel-controls">
+                <button class="language-switch-btn" title="Switch Language">${ui.languageSwitch}</button>
+                <button class="ai-panel-close">×</button>
+            </div>
         </div>
         
         <div class="ai-panel-content">
             <!-- 邮件总结区域 -->
             <div class="email-summary-section">
-                <h4>📄 邮件总结</h4>
-                <div class="email-summary-content">正在分析邮件内容...</div>
+                <h4>${ui.emailSummary}</h4>
+                <div class="email-summary-content">${ui.analyzing}</div>
             </div>
             
             <!-- 回复输入区域 -->
             <div class="reply-input-section">
-                <h4>💬 您的回复</h4>
-                <textarea class="reply-input" placeholder="请输入您想要回复的内容..."></textarea>
-                <div class="input-hint">💡 提示：按 Enter 键快速优化回复</div>
-                <button class="optimize-btn" disabled>✨ AI优化回复</button>
+                <h4>${ui.yourReply}</h4>
+                
+                <!-- 语气风格选择器 -->
+                <div class="tone-style-section">
+                    <label class="tone-style-label">${ui.toneStyle}</label>
+                    <select class="tone-style-select">
+                        <option value="default">${ui.toneDefault}</option>
+                        <option value="professional">${ui.toneProfessional}</option>
+                        <option value="friendly">${ui.toneFriendly}</option>
+                        <option value="concise">${ui.toneConcise}</option>
+                        <option value="creative">${ui.toneCreative}</option>
+                        <option value="polite">${ui.tonePolite}</option>
+                    </select>
+                    <div class="tone-style-hint">${ui.toneHintDefault}</div>
+                </div>
+                
+                <textarea class="reply-input" placeholder="${ui.yourReply.replace('💬 ', '')}..."></textarea>
+                <div class="input-hint">${ui.inputHint}</div>
+                <button class="optimize-btn" disabled>${ui.optimizeButton}</button>
             </div>
             
             <!-- 优化结果区域 -->
             <div class="optimized-result-section" style="display: none;">
-                <h4>🎯 优化后的回复</h4>
+                <h4>${ui.optimizedReply}</h4>
                 <div class="optimized-content"></div>
                 <div class="result-actions">
-                    <button class="use-reply-btn">📝 使用此回复</button>
-                    <button class="re-optimize-btn">🔄 重新优化</button>
+                    <button class="use-reply-btn">${ui.useReply}</button>
+                    <button class="re-optimize-btn">${ui.reOptimize}</button>
                 </div>
             </div>
         </div>
     `;
+    
+    // 根据当前语言调整面板宽度
+    const panelWidth = currentLanguage === 'en' ? '520px' : '480px';
     
     // 设置面板样式（居中显示）
     aiPanel.style.cssText = `
@@ -488,7 +807,7 @@ function showAIPanel(inputBox) {
         left: 50% !important;
         top: 50% !important;
         transform: translate(-50%, -50%) !important;
-        width: 480px !important;
+        width: ${panelWidth} !important;
         max-width: 90vw !important;
         max-height: 80vh !important;
         overflow-y: auto !important;
@@ -579,6 +898,30 @@ function addAIPanelStyles() {
             font-size: 16px !important;
         }
         
+        .ai-panel-controls {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        
+        .language-switch-btn {
+            background: rgba(26, 115, 232, 0.1) !important;
+            border: 1px solid rgba(26, 115, 232, 0.2) !important;
+            color: #1a73e8 !important;
+            padding: 6px 12px !important;
+            border-radius: 16px !important;
+            font-size: 12px !important;
+            font-weight: 500 !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+        }
+        
+        .language-switch-btn:hover {
+            background: rgba(26, 115, 232, 0.15) !important;
+            border-color: rgba(26, 115, 232, 0.3) !important;
+            transform: translateY(-1px) !important;
+        }
+        
         .ai-panel-close {
             background: none !important;
             border: none !important;
@@ -592,11 +935,6 @@ function addAIPanelStyles() {
             align-items: center !important;
             justify-content: center !important;
             transition: all 0.2s ease !important;
-        }
-        
-        .ai-panel-close:hover {
-            background: rgba(95, 99, 104, 0.1) !important;
-            color: #202124 !important;
         }
         
         .ai-panel-content {
@@ -738,6 +1076,77 @@ function addAIPanelStyles() {
             gap: 6px !important;
         }
         
+        /* 语气风格选择器样式 - 优化美观设计 */
+        .tone-style-section {
+            margin-bottom: 20px !important;
+            padding: 16px !important;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%) !important;
+            border: 1px solid rgba(102, 126, 234, 0.15) !important;
+            border-radius: 12px !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .tone-style-section:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%) !important;
+            border-color: rgba(102, 126, 234, 0.25) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15) !important;
+        }
+        
+        .tone-style-label {
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            color: #1a73e8 !important;
+            margin-bottom: 8px !important;
+            display: block !important;
+            text-align: left !important;
+        }
+        
+        .tone-style-select {
+            width: 100% !important;
+            padding: 12px 16px !important;
+            border: 2px solid #e8eaed !important;
+            border-radius: 10px !important;
+            font-size: 14px !important;
+            font-family: 'Google Sans', Roboto, sans-serif !important;
+            background: white !important;
+            color: #202124 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+            appearance: none !important;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 12px center !important;
+            background-size: 16px !important;
+            padding-right: 40px !important;
+        }
+        
+        .tone-style-select:focus {
+            outline: none !important;
+            border-color: #667eea !important;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15), 0 4px 8px rgba(0,0,0,0.1) !important;
+            transform: translateY(-1px) !important;
+        }
+        
+        .tone-style-select:hover {
+            border-color: #667eea !important;
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2) !important;
+            transform: translateY(-1px) !important;
+        }
+        
+        .tone-style-select option {
+            padding: 8px 12px !important;
+            font-size: 14px !important;
+            color: #202124 !important;
+            background: white !important;
+        }
+        
+        .tone-style-select option:hover {
+            background: #f8f9ff !important;
+            color: #1a73e8 !important;
+        }
+        
         .reply-input {
             width: 100% !important;
             min-height: 100px !important;
@@ -865,6 +1274,38 @@ function addAIPanelStyles() {
             background: #1557b0 !important;
             border-color: #1557b0 !important;
         }
+        
+        /* 语气风格选择器的选中状态指示 */
+        .tone-style-select:focus option:checked {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            color: white !important;
+            font-weight: 600 !important;
+        }
+        
+        /* 语气风格选择器的加载状态 */
+        .tone-style-select.loading {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M21 12a9 9 0 11-6.219-8.56'/%3e%3c/svg%3e") !important;
+            animation: spin 1s linear infinite !important;
+        }
+        
+        @keyframes spin {
+            from { background-position: right 12px center; }
+            to { background-position: right 12px center; transform: rotate(360deg); }
+        }
+        
+        /* 语气风格提示文本 */
+        .tone-style-hint {
+            font-size: 12px !important;
+            color: #5f6368 !important;
+            margin-top: 6px !important;
+            font-style: italic !important;
+            opacity: 0.8 !important;
+            transition: opacity 0.3s ease !important;
+        }
+        
+        .tone-style-section:hover .tone-style-hint {
+            opacity: 1 !important;
+        }
     `;
     
     document.head.appendChild(style);
@@ -881,9 +1322,52 @@ function bindNewAIPanelEvents(panel, inputBox, overlay) {
         overlay.remove();
     });
     
+    // 语言切换按钮
+    const languageSwitchBtn = panel.querySelector('.language-switch-btn');
+    if (languageSwitchBtn) {
+        languageSwitchBtn.addEventListener('click', async () => {
+            try {
+                console.log('🌐 开始切换语言...');
+                
+                // 显示切换中状态
+                const originalText = languageSwitchBtn.textContent;
+                languageSwitchBtn.textContent = '🔄 切换中...';
+                languageSwitchBtn.disabled = true;
+                
+                // 切换语言
+                const result = await switchLanguage();
+                
+                console.log('✅ 语言切换成功:', result);
+                
+                // 重新创建面板以应用新语言
+                panel.remove();
+                aiPanel = null;
+                overlay.remove();
+                
+                // 稍等一下再重新显示面板
+                setTimeout(() => {
+                    showAIPanel(inputBox);
+                }, 300);
+                
+            } catch (error) {
+                console.error('❌ 语言切换失败:', error);
+                
+                // 恢复按钮状态
+                const originalText = currentLanguageConfig?.ui?.languageSwitch || '🌐 Language';
+                languageSwitchBtn.textContent = originalText;
+                languageSwitchBtn.disabled = false;
+                
+                // 显示错误通知
+                showNotification('Language switch failed: ' + error.message, 'error');
+            }
+        });
+    }
+    
     // 回复输入框事件
     const replyInput = panel.querySelector('.reply-input');
     const optimizeBtn = panel.querySelector('.optimize-btn');
+    const toneStyleSelect = panel.querySelector('.tone-style-select');
+    const toneStyleHint = panel.querySelector('.tone-style-hint');
     
     // 监听输入变化，启用/禁用优化按钮
     replyInput.addEventListener('input', () => {
@@ -929,7 +1413,8 @@ function bindNewAIPanelEvents(panel, inputBox, overlay) {
             panel.remove();
             aiPanel = null;
             overlay.remove();
-            showNotification('回复已插入到邮件中', 'success');
+            const ui = currentLanguageConfig ? currentLanguageConfig.ui : getDefaultEnglishConfig().ui;
+            showNotification(ui.replyInserted, 'success');
         });
     }
     
@@ -953,6 +1438,34 @@ function bindNewAIPanelEvents(panel, inputBox, overlay) {
             }
         }, { once: true });
     }, 100);
+    
+    // 语气风格选择器事件
+    if (toneStyleSelect && toneStyleHint) {
+        toneStyleSelect.addEventListener('change', () => {
+            const selectedTone = toneStyleSelect.value;
+            const ui = currentLanguageConfig ? currentLanguageConfig.ui : getDefaultEnglishConfig().ui;
+            
+            // 更新提示文本
+            const hintMap = {
+                'default': ui.toneHintDefault,
+                'professional': ui.toneHintProfessional,
+                'friendly': ui.toneHintFriendly,
+                'concise': ui.toneHintConcise,
+                'creative': ui.toneHintCreative,
+                'polite': ui.toneHintPolite
+            };
+            
+            toneStyleHint.textContent = hintMap[selectedTone] || ui.toneHintDefault;
+            
+            // 添加选择动画效果
+            toneStyleSelect.classList.add('loading');
+            setTimeout(() => {
+                toneStyleSelect.classList.remove('loading');
+            }, 500);
+            
+            console.log('🎭 语气风格已选择:', selectedTone);
+        });
+    }
 }
 
 /**
@@ -969,12 +1482,14 @@ async function autoSummarizeEmail() {
         const emailContent = extractEmailContent();
         
         if (!emailContent) {
-            summaryContent.innerHTML = '❌ 未找到邮件内容，请确保在邮件页面中使用';
+            const ui = currentLanguageConfig ? currentLanguageConfig.ui : getDefaultEnglishConfig().ui;
+            summaryContent.innerHTML = ui.noEmailContent;
             return;
         }
         
         console.log('📧 找到邮件内容，长度:', emailContent.length);
-        summaryContent.innerHTML = '🤖 正在分析邮件内容...';
+        const ui = currentLanguageConfig ? currentLanguageConfig.ui : getDefaultEnglishConfig().ui;
+        summaryContent.innerHTML = ui.analyzing;
         summaryContent.classList.add('streaming-text');
         
         // 调用AI总结 - 使用流式输出
@@ -985,12 +1500,14 @@ async function autoSummarizeEmail() {
     } catch (error) {
         console.error('❌ 邮件总结失败:', error);
         
+        const ui = currentLanguageConfig ? currentLanguageConfig.ui : getDefaultEnglishConfig().ui;
+        
         // 检查是否是扩展context失效错误
         if (error.message && error.message.includes('Extension context invalidated')) {
-            summaryContent.innerHTML = '🔄 扩展已更新，请刷新页面后重试';
+            summaryContent.innerHTML = ui.extensionUpdated;
             showExtensionUpdateNotice();
         } else {
-            summaryContent.innerHTML = `❌ 总结失败: ${error.message}`;
+            summaryContent.innerHTML = `${ui.summaryFailed}: ${error.message}`;
         }
         summaryContent.classList.remove('streaming-text');
     }
@@ -1169,13 +1686,20 @@ async function optimizeUserReply(userReply, panel) {
     const optimizedSection = panel.querySelector('.optimized-result-section');
     const optimizedContent = panel.querySelector('.optimized-content');
     const optimizeBtn = panel.querySelector('.optimize-btn');
+    const toneStyleSelect = panel.querySelector('.tone-style-select');
     
     try {
         console.log('✨ 开始优化用户回复...');
         
+        const ui = currentLanguageConfig ? currentLanguageConfig.ui : getDefaultEnglishConfig().ui;
+        
+        // 获取选择的语气风格
+        const selectedTone = toneStyleSelect ? toneStyleSelect.value : 'default';
+        console.log('🎭 选择的语气风格:', selectedTone);
+        
         // 显示优化区域
         optimizedSection.style.display = 'block';
-        optimizedContent.innerHTML = '🤖 正在优化您的回复...';
+        optimizedContent.innerHTML = ui.optimizing;
         optimizedContent.classList.add('streaming-text');
         
         // 自动滚动到优化结果区域
@@ -1188,13 +1712,13 @@ async function optimizeUserReply(userReply, panel) {
         
         // 禁用优化按钮
         optimizeBtn.disabled = true;
-        optimizeBtn.textContent = '⏳ 优化中...';
+        optimizeBtn.textContent = '⏳ ' + (currentLanguage === 'zh' ? '优化中...' : 'Optimizing...');
         
         // 获取邮件内容作为上下文
         const emailContent = extractEmailContent();
         
-        // 调用AI优化 - 使用流式输出
-        await optimizeReplyStream(userReply, emailContent, optimizedContent);
+        // 调用AI优化 - 使用流式输出，传递语气风格
+        await optimizeReplyStream(userReply, emailContent, optimizedContent, selectedTone);
         
         // 优化完成后再次滚动确保可见
         setTimeout(() => {
@@ -1209,32 +1733,36 @@ async function optimizeUserReply(userReply, panel) {
     } catch (error) {
         console.error('❌ 回复优化失败:', error);
         
+        const ui = currentLanguageConfig ? currentLanguageConfig.ui : getDefaultEnglishConfig().ui;
+        
         // 检查是否是扩展context失效错误
         if (error.message && error.message.includes('Extension context invalidated')) {
-            optimizedContent.innerHTML = '🔄 扩展已更新，请刷新页面后重试';
+            optimizedContent.innerHTML = ui.extensionUpdated;
             showExtensionUpdateNotice();
         } else {
-            optimizedContent.innerHTML = `❌ 优化失败: ${error.message}`;
+            optimizedContent.innerHTML = `${ui.optimizeFailed}: ${error.message}`;
         }
         optimizedContent.classList.remove('streaming-text');
     } finally {
         // 恢复优化按钮
+        const ui = currentLanguageConfig ? currentLanguageConfig.ui : getDefaultEnglishConfig().ui;
         optimizeBtn.disabled = false;
-        optimizeBtn.textContent = '✨ AI优化回复';
+        optimizeBtn.textContent = ui.optimizeButton;
     }
 }
 
 /**
  * 流式优化回复
  */
-async function optimizeReplyStream(userReply, emailContext, targetElement) {
+async function optimizeReplyStream(userReply, emailContext, targetElement, tone) {
     try {
         const response = await safeRuntimeMessage({
             action: 'optimizeReplyStream',
             data: { 
                 userReply: userReply,
                 emailContext: emailContext || '',
-                style: 'professional'
+                style: 'professional',
+                tone: tone
             }
         });
         
@@ -2252,5 +2780,65 @@ new MutationObserver(() => {
         setTimeout(initializeExtension, 1000);
     }
 }).observe(document, { subtree: true, childList: true });
+
+/**
+ * 监听来自background的消息
+ * 处理扩展图标点击事件
+ */
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    console.log('收到消息:', request);
+    
+    try {
+        if (request.action === 'showAIPanel') {
+            console.log('🎯 处理显示AI面板请求');
+            
+            // 查找当前页面的输入框
+            const inputBoxes = document.querySelectorAll([
+                'div[contenteditable="true"][role="textbox"]',
+                'div[contenteditable="true"][aria-label*="邮件正文"]',
+                'div[contenteditable="true"][aria-label*="Message Body"]',
+                'div[contenteditable="true"].Am.Al.editable',
+                'div[contenteditable="true"][data-message-id]'
+            ].join(', '));
+            
+            if (inputBoxes.length > 0) {
+                // 找到输入框，显示AI面板
+                const inputBox = inputBoxes[0];
+                console.log('✅ 找到输入框，显示AI面板');
+                
+                // 确保输入框已经增强
+                enhanceInputBox(inputBox);
+                
+                // 显示AI面板
+                showAIPanel(inputBox);
+                
+                sendResponse({ success: true, message: 'AI面板已显示' });
+            } else {
+                // 没有找到输入框，显示提示
+                console.log('⚠️ 未找到邮件输入框');
+                
+                showNotification(
+                    currentLanguageConfig?.ui?.noEmailContent || 
+                    '❌ 请先打开邮件回复框，然后点击扩展图标',
+                    'warning'
+                );
+                
+                sendResponse({ 
+                    success: false, 
+                    message: '未找到邮件输入框，请先打开邮件回复框' 
+                });
+            }
+        }
+    } catch (error) {
+        console.error('❌ 处理消息失败:', error);
+        sendResponse({ 
+            success: false, 
+            message: '处理失败: ' + error.message 
+        });
+    }
+    
+    // 返回true表示异步响应
+    return true;
+});
 
 console.log('Gmail AI回复助手内容脚本已加载 - 完整格式保持版本'); 
