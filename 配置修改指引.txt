@@ -1,5 +1,68 @@
 # Gmail AI - 配置修改指引
 
+## 🔧 重要修复：AI回复不再包含邮件主题 (v2.6.4)
+
+### ✅ 修复AI回复包含邮件主题的问题！
+从v2.6.4版本开始，修复了AI回复中包含邮件主题的问题：
+
+#### 🎯 修复的问题
+- **邮件主题干扰**：AI之前会在回复中包含"Subject: xxx"等主题行
+- **格式不规范**：回复内容包含不必要的邮件格式元素
+- **用户体验差**：用户需要手动删除主题行才能使用回复
+
+#### 🔧 解决方案
+- **明确指令**：在AI提示词中明确要求"只输出邮件正文内容"
+- **排除主题**：明确指出"不要包含邮件主题"
+- **纯净输出**：确保AI只输出可直接使用的邮件正文
+
+#### 📝 技术改进
+- **英文提示词优化** (background.js 第74行)
+  ```
+  "IMPORTANT: Output ONLY the optimized email reply BODY content, do not include any subject line, explanatory text, prefixes, or additional comments."
+  ```
+
+- **中文提示词优化** (background.js 第152行)
+  ```
+  "重要提示：只输出优化后的邮件正文内容，不要包含邮件主题、解释性文字、前缀或额外评论。"
+  ```
+
+- **流式处理优化** (background.js 第1115-1125行)
+  ```
+  "Output ONLY the final email reply BODY content without any subject line, explanatory text or prefixes."
+  ```
+
+#### 🎯 现在的正确行为
+- **纯净回复**：AI只输出邮件正文内容，不包含主题行
+- **直接可用**：生成的回复可以直接复制使用，无需编辑
+- **格式规范**：符合标准邮件回复格式
+
+#### 🔍 使用效果对比
+**修复前（错误）**：
+```
+Subject: Re: Thank You for the Onboarding Support
+
+Dear Nick,
+
+Thank you for sharing these valuable insights...
+```
+
+**修复后（正确）**：
+```
+Dear Nick,
+
+Thank you for sharing these valuable insights...
+```
+
+#### 🔧 如果仍有问题
+如果AI回复仍然包含邮件主题：
+
+1. **重新加载扩展**：在Chrome扩展管理页面重新加载
+2. **清除缓存**：清除浏览器缓存后重试
+3. **检查提示词**：确认background.js中的提示词已更新
+4. **查看控制台**：检查是否有相关错误信息
+
+---
+
 ## 🔧 重要修复：AI回复角色混淆问题 (v2.6.3)
 
 ### ✅ 修复AI生成错误回复的问题！
