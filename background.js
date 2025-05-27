@@ -7,6 +7,28 @@
 importScripts('utils/api.js');
 
 /**
+ * 扩展安装/更新事件监听
+ * 首次安装时自动检测浏览器语言
+ */
+chrome.runtime.onInstalled.addListener(async (details) => {
+    console.log('🚀 Gmail AI扩展已安装/更新:', details.reason);
+    
+    try {
+        if (details.reason === 'install') {
+            // 首次安装，检测浏览器语言
+            const browserLang = detectBrowserLanguage();
+            await chrome.storage.sync.set({ 
+                language: browserLang,
+                languageAutoDetected: true 
+            });
+            console.log('🎯 首次安装，自动设置语言为:', browserLang);
+        }
+    } catch (error) {
+        console.error('❌ 安装时语言设置失败:', error);
+    }
+});
+
+/**
  * 处理扩展图标点击事件
  * 在Gmail页面中显示AI面板，而不是popup
  */
@@ -288,18 +310,60 @@ chrome.runtime.onStartup.addListener(async () => {
 });
 
 /**
+ * 检测浏览器默认语言
+ */
+function detectBrowserLanguage() {
+    try {
+        // 获取浏览器语言设置
+        const browserLang = chrome.i18n.getUILanguage() || navigator.language || navigator.userLanguage || 'en';
+        console.log('🌐 检测到浏览器语言:', browserLang);
+        
+        // 判断是否为中文环境
+        if (browserLang.toLowerCase().includes('zh') || 
+            browserLang.toLowerCase().includes('cn') ||
+            browserLang.toLowerCase().includes('chinese')) {
+            return 'zh';
+        }
+        
+        // 默认返回英文
+        return 'en';
+    } catch (error) {
+        console.error('❌ 检测浏览器语言失败:', error);
+        return 'en'; // 默认英文
+    }
+}
+
+/**
  * 获取当前语言配置
  */
 async function getCurrentLanguageConfig() {
     try {
-        const config = await chrome.storage.sync.get(['language']);
-        const currentLang = config.language || 'en';
+        const config = await chrome.storage.sync.get(['language', 'languageAutoDetected']);
+        let currentLang = config.language;
+        
+        // 如果用户没有手动设置过语言，则自动检测浏览器语言
+        if (!currentLang && !config.languageAutoDetected) {
+            currentLang = detectBrowserLanguage();
+            console.log('🎯 自动检测语言设置为:', currentLang);
+            
+            // 保存自动检测的语言设置
+            await chrome.storage.sync.set({ 
+                language: currentLang,
+                languageAutoDetected: true 
+            });
+        } else if (!currentLang) {
+            // 如果已经自动检测过但没有语言设置，使用默认英文
+            currentLang = 'en';
+        }
+        
+        console.log('📝 当前使用语言:', currentLang);
+        
         return {
             lang: currentLang,
             config: LANGUAGE_CONFIG[currentLang]
         };
     } catch (error) {
-        console.error('获取语言配置失败:', error);
+        console.error('❌ 获取语言配置失败:', error);
         return {
             lang: 'en',
             config: LANGUAGE_CONFIG.en
@@ -316,8 +380,13 @@ async function switchLanguage() {
         const currentLang = config.language || 'en';
         const newLang = currentLang === 'en' ? 'zh' : 'en';
         
-        await chrome.storage.sync.set({ language: newLang });
-        console.log(`语言已切换: ${currentLang} -> ${newLang}`);
+        // 保存新语言设置，并标记为手动设置（覆盖自动检测）
+        await chrome.storage.sync.set({ 
+            language: newLang,
+            languageAutoDetected: false // 标记为手动设置
+        });
+        
+        console.log(`🔄 语言已手动切换: ${currentLang} -> ${newLang}`);
         
         return {
             success: true,
@@ -325,7 +394,7 @@ async function switchLanguage() {
             config: LANGUAGE_CONFIG[newLang]
         };
     } catch (error) {
-        console.error('切换语言失败:', error);
+        console.error('❌ 切换语言失败:', error);
         throw error;
     }
 }
